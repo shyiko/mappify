@@ -69,7 +69,8 @@ public class ObjectMapperImpl implements ObjectMapper, BeanPostProcessor {
         if (bean.getClass().isAnnotationPresent(MappingProvider.class)) {
             Method[] methods = bean.getClass().getMethods();
             for (Method method : methods) {
-                if (method.isAnnotationPresent(Mapping.class)) {
+                Mapping mapping = method.getAnnotation(Mapping.class);
+                if (mapping != null) {
                     Class<?>[] parameterTypes = method.getParameterTypes();
                     if (parameterTypes.length != 2) {
                         logger.warn(method + " is annotated with @Mapping but do not present a valid mapping");
@@ -77,10 +78,16 @@ public class ObjectMapperImpl implements ObjectMapper, BeanPostProcessor {
                     }
                     Class sourceClass = parameterTypes[0];
                     Class targetClass = parameterTypes[1];
+                    String mappingName = mapping.value();
                     if (logger.isDebugEnabled()) {
-                        logger.debug("Discovered mapping from " + sourceClass + " to " + targetClass);
+                        StringBuilder message = new StringBuilder("Discovered mapping ");
+                        if (!"".equals(mappingName)) {
+                            message.append("'").append(mappingName).append("' ");
+                        }
+                         message.append("from ").append(sourceClass).append(" to ").append(targetClass);
+                        logger.debug(message.toString());
                     }
-                    config.put(new MappingKey(sourceClass, targetClass), new MappingValue(bean, method));
+                    config.put(new MappingKey(sourceClass, targetClass, mappingName), new MappingValue(bean, method));
                 }
             }
         }
@@ -89,13 +96,18 @@ public class ObjectMapperImpl implements ObjectMapper, BeanPostProcessor {
 
     @Override
     public <T> void map(Object source, T target) {
+        map(source, target, "");
+    }
+
+    @Override
+    public <T> void map(Object source, T target, String mappingName) {
         if (source == null) {
             throw new IllegalArgumentException("Source object cannot be null");
         }
         if (target == null) {
             throw new IllegalArgumentException("Target object cannot be null");
         }
-        MappingKey key = new MappingKey(deProxy(source), deProxy(target));
+        MappingKey key = new MappingKey(deProxy(source), deProxy(target), mappingName);
         MappingValue mapping = config.get(key);
         if (mapping == null) {
             MappingKey rootKey = key;
@@ -104,7 +116,7 @@ public class ObjectMapperImpl implements ObjectMapper, BeanPostProcessor {
                 if (sourceSuperClass == null) {
                     break;
                 }
-                key = new MappingKey(sourceSuperClass, key.targetClass);
+                key = new MappingKey(sourceSuperClass, key.targetClass, mappingName);
                 mapping = config.get(key);
             } while (mapping == null);
             if (mapping == null) {
@@ -122,6 +134,11 @@ public class ObjectMapperImpl implements ObjectMapper, BeanPostProcessor {
 
     @Override
     public <T> T map(Object source, Class<T> targetClass) {
+        return map(source, targetClass, "");
+    }
+
+    @Override
+    public <T> T map(Object source, Class<T> targetClass, String mappingName) {
         if (source == null) {
             return null;
         }
@@ -131,53 +148,78 @@ public class ObjectMapperImpl implements ObjectMapper, BeanPostProcessor {
         } catch (Exception e) {
             throw new MappingException(targetClass + " has no default constructor", e);
         }
-        map(source, result);
+        map(source, result, mappingName);
         return result;
     }
 
     @Override
     public <T> HashSet<T> mapToHashSet(Collection sources, Class<T> targetClass) {
+        return mapToHashSet(sources, targetClass, "");
+    }
+
+    @Override
+    public <T> HashSet<T> mapToHashSet(Collection sources, Class<T> targetClass, String mappingName) {
         HashSet<T> result = new HashSet<T>();
         for (Object source : sources) {
-            result.add(map(source, targetClass));
+            result.add(map(source, targetClass, mappingName));
         }
         return result;
     }
 
     @Override
     public <T> TreeSet<T> mapToTreeSet(Collection sources, Class<T> targetClass) {
+        return mapToTreeSet(sources, targetClass, "");
+    }
+
+    @Override
+    public <T> TreeSet<T> mapToTreeSet(Collection sources, Class<T> targetClass, String mappingName) {
         TreeSet<T> result = new TreeSet<T>();
         for (Object source : sources) {
-            result.add(map(source, targetClass));
+            result.add(map(source, targetClass, mappingName));
         }
         return result;
     }
 
     @Override
     public <T> LinkedList<T> mapToLinkedList(Collection sources, Class<T> targetClass) {
+        return mapToLinkedList(sources, targetClass, "");
+    }
+
+    @Override
+    public <T> LinkedList<T> mapToLinkedList(Collection sources, Class<T> targetClass, String mappingName) {
         LinkedList<T> result = new LinkedList<T>();
         for (Object source : sources) {
-            result.add(map(source, targetClass));
+            result.add(map(source, targetClass, mappingName));
         }
         return result;
     }
 
     @Override
     public <T> ArrayList<T> mapToArrayList(Collection sources, Class<T> targetClass) {
+        return mapToArrayList(sources, targetClass, "");
+    }
+
+    @Override
+    public <T> ArrayList<T> mapToArrayList(Collection sources, Class<T> targetClass, String mappingName) {
         ArrayList<T> result = new ArrayList<T>(sources.size());
         for (Object source : sources) {
-            result.add(map(source, targetClass));
+            result.add(map(source, targetClass, mappingName));
         }
         return result;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public <T> T[] mapToArray(Collection sources, Class<T> targetClass) {
+        return mapToArray(sources, targetClass, "");
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> T[] mapToArray(Collection sources, Class<T> targetClass, String mappingName) {
         T[] result = (T[]) Array.newInstance(targetClass, sources.size());
         int i = 0;
         for (Object source : sources) {
-            result[i++] = map(source, targetClass);
+            result[i++] = map(source, targetClass, mappingName);
         }
         return result;
     }
@@ -199,34 +241,40 @@ public class ObjectMapperImpl implements ObjectMapper, BeanPostProcessor {
 
         private final Class sourceClass;
         private final Class targetClass;
+        private final String mappingName;
 
-        private MappingKey(final Class sourceClass, final Class targetClass) {
+        private MappingKey(final Class sourceClass, final Class targetClass, String mappingName) {
             this.sourceClass = sourceClass;
             this.targetClass = targetClass;
+            this.mappingName = mappingName;
         }
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (o == null || getClass() != o.getClass()) {
-                return false;
-            }
+            if (this == o) return true;
+            if (!(o instanceof MappingKey)) return false;
             MappingKey that = (MappingKey) o;
-            return sourceClass.equals(that.sourceClass) && targetClass.equals(that.targetClass);
+            return mappingName.equals(that.mappingName) &&
+                   sourceClass.equals(that.sourceClass) &&
+                   targetClass.equals(that.targetClass);
         }
 
         @Override
         public int hashCode() {
             int result = sourceClass.hashCode();
             result = 31 * result + targetClass.hashCode();
+            result = 31 * result + mappingName.hashCode();
             return result;
         }
 
         @Override
         public String toString() {
-            return sourceClass + "->" + targetClass;
+            StringBuilder sb = new StringBuilder();
+            sb.append(sourceClass).append("->").append(targetClass);
+            if (!"".equals(mappingName)) {
+                sb.append(" ('").append(mappingName).append("')");
+            }
+            return sb.toString();
         }
     }
 

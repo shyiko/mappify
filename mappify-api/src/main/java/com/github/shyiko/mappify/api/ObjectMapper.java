@@ -31,12 +31,29 @@ public interface ObjectMapper {
     <T> void map(Object source, T target);
 
     /**
+     * Perform mapping from source to target.
+     * @param source source object
+     * @param target target object
+     * @param mappingName mapping name
+     */
+    <T> void map(Object source, T target, String mappingName);
+
+    /**
      * Perform mapping form source object to target class.
      * @param source source object. nullable
      * @param targetClass target class
      * @return null if source is null, otherwise mapped instance of target class
      */
     <T> T map(Object source, Class<T> targetClass);
+
+    /**
+     * Perform mapping form source object to target class.
+     * @param source source object. nullable
+     * @param targetClass target class
+     * @param mappingName mapping name
+     * @return null if source is null, otherwise mapped instance of target class
+     */
+    <T> T map(Object source, Class<T> targetClass, String mappingName);
 
     /**
      * Perform mapping of objects provided by sources parameter.
@@ -50,9 +67,27 @@ public interface ObjectMapper {
      * Perform mapping of objects provided by sources parameter.
      * @param sources collection of objects
      * @param targetClass target class
+     * @param mappingName mapping name
+     * @return {@link HashSet} containing mapped instances. never null
+     */
+    <T> HashSet<T> mapToHashSet(Collection sources, Class<T> targetClass, String mappingName);
+
+    /**
+     * Perform mapping of objects provided by sources parameter.
+     * @param sources collection of objects
+     * @param targetClass target class
      * @return {@link TreeSet} containing mapped instances. never null
      */
     <T> TreeSet<T> mapToTreeSet(Collection sources, Class<T> targetClass);
+
+    /**
+     * Perform mapping of objects provided by sources parameter.
+     * @param sources collection of objects
+     * @param targetClass target class
+     * @param mappingName mapping name
+     * @return {@link TreeSet} containing mapped instances. never null
+     */
+    <T> TreeSet<T> mapToTreeSet(Collection sources, Class<T> targetClass, String mappingName);
 
     /**
      * Perform mapping of objects provided by sources parameter.
@@ -66,6 +101,15 @@ public interface ObjectMapper {
      * Perform mapping of objects provided by sources parameter.
      * @param sources collection of objects
      * @param targetClass target class
+     * @param mappingName mapping name
+     * @return {@link LinkedList} containing mapped instances. never null
+     */
+    <T> LinkedList<T> mapToLinkedList(Collection sources, Class<T> targetClass, String mappingName);
+
+    /**
+     * Perform mapping of objects provided by sources parameter.
+     * @param sources collection of objects
+     * @param targetClass target class
      * @return {@link ArrayList} containing mapped instances. never null
      */
     <T> ArrayList<T> mapToArrayList(Collection sources, Class<T> targetClass);
@@ -74,7 +118,25 @@ public interface ObjectMapper {
      * Perform mapping of objects provided by sources parameter.
      * @param sources collection of objects
      * @param targetClass target class
+     * @param mappingName mapping name
+     * @return {@link ArrayList} containing mapped instances. never null
+     */
+    <T> ArrayList<T> mapToArrayList(Collection sources, Class<T> targetClass, String mappingName);
+
+    /**
+     * Perform mapping of objects provided by sources parameter.
+     * @param sources collection of objects
+     * @param targetClass target class
      * @return array containing mapped instances. never null
      */
     <T> T[] mapToArray(Collection sources, Class<T> targetClass);
+
+    /**
+     * Perform mapping of objects provided by sources parameter.
+     * @param sources collection of objects
+     * @param targetClass target class
+     * @param mappingName mapping name
+     * @return array containing mapped instances. never null
+     */
+    <T> T[] mapToArray(Collection sources, Class<T> targetClass, String mappingName);
 }

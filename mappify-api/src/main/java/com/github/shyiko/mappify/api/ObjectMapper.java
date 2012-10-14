@@ -15,7 +15,7 @@
  */
 package com.github.shyiko.mappify.api;
 
-import java.util.Collection;
+import java.util.*;
 
 /**
  * Defines contract for object mappings.
@@ -40,17 +40,41 @@ public interface ObjectMapper {
 
     /**
      * Perform mapping of objects provided by sources parameter.
-     * @param sources list of objects
+     * @param sources collection of objects
      * @param targetClass target class
-     * @return list of mapped instances of target class. never null
+     * @return {@link HashSet} containing mapped instances. never null
      */
-    <T> Collection<T> map(Collection sources, Class<T> targetClass);
+    <T> HashSet<T> mapToHashSet(Collection sources, Class<T> targetClass);
 
     /**
      * Perform mapping of objects provided by sources parameter.
-     * @param sources list of objects
+     * @param sources collection of objects
      * @param targetClass target class
-     * @return array of mapped instances of target class. never null
+     * @return {@link TreeSet} containing mapped instances. never null
+     */
+    <T> TreeSet<T> mapToTreeSet(Collection sources, Class<T> targetClass);
+
+    /**
+     * Perform mapping of objects provided by sources parameter.
+     * @param sources collection of objects
+     * @param targetClass target class
+     * @return {@link LinkedList} containing mapped instances. never null
+     */
+    <T> LinkedList<T> mapToLinkedList(Collection sources, Class<T> targetClass);
+
+    /**
+     * Perform mapping of objects provided by sources parameter.
+     * @param sources collection of objects
+     * @param targetClass target class
+     * @return {@link ArrayList} containing mapped instances. never null
+     */
+    <T> ArrayList<T> mapToArrayList(Collection sources, Class<T> targetClass);
+
+    /**
+     * Perform mapping of objects provided by sources parameter.
+     * @param sources collection of objects
+     * @param targetClass target class
+     * @return array containing mapped instances. never null
      */
     <T> T[] mapToArray(Collection sources, Class<T> targetClass);
 }

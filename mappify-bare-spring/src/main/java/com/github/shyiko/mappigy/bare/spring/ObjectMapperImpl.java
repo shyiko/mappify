@@ -136,8 +136,35 @@ public class ObjectMapperImpl implements ObjectMapper, BeanPostProcessor {
     }
 
     @Override
-    public <T> Collection<T> map(Collection sources, Class<T> targetClass) {
-        List<T> result = new ArrayList<T>();
+    public <T> HashSet<T> mapToHashSet(Collection sources, Class<T> targetClass) {
+        HashSet<T> result = new HashSet<T>();
+        for (Object source : sources) {
+            result.add(map(source, targetClass));
+        }
+        return result;
+    }
+
+    @Override
+    public <T> TreeSet<T> mapToTreeSet(Collection sources, Class<T> targetClass) {
+        TreeSet<T> result = new TreeSet<T>();
+        for (Object source : sources) {
+            result.add(map(source, targetClass));
+        }
+        return result;
+    }
+
+    @Override
+    public <T> LinkedList<T> mapToLinkedList(Collection sources, Class<T> targetClass) {
+        LinkedList<T> result = new LinkedList<T>();
+        for (Object source : sources) {
+            result.add(map(source, targetClass));
+        }
+        return result;
+    }
+
+    @Override
+    public <T> ArrayList<T> mapToArrayList(Collection sources, Class<T> targetClass) {
+        ArrayList<T> result = new ArrayList<T>(sources.size());
         for (Object source : sources) {
             result.add(map(source, targetClass));
         }

@@ -15,6 +15,7 @@
  */
 package com.github.shyiko.mappigy.bare.spring;
 
+import com.github.shyiko.mappify.api.AbstractObjectMapper;
 import com.github.shyiko.mappify.api.MappingContext;
 import com.github.shyiko.mappify.api.MappingException;
 import com.github.shyiko.mappify.api.ObjectMapper;
@@ -34,11 +35,10 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author <a href="mailto:stanley.shyiko@gmail.com">Stanley Shyiko</a>
  */
 @Component
-public class ObjectMapperImpl implements ObjectMapper, BeanPostProcessor {
+public class ObjectMapperImpl extends AbstractObjectMapper implements ObjectMapper, BeanPostProcessor {
 
     private static final Logger logger = LoggerFactory.getLogger(ObjectMapperImpl.class);
 
-    private String defaultMappingName = "";
     private Map<MappingKey, MappingValue> config = new ConcurrentHashMap<MappingKey, MappingValue>();
     private Method hibernateProxyHelperNarrowMethod;
 
@@ -109,11 +109,6 @@ public class ObjectMapperImpl implements ObjectMapper, BeanPostProcessor {
         return new ObjectMapperClosure(context);
     }
 
-    @Override
-    public <T> T map(Object source, T target) {
-        return map(source, target, defaultMappingName);
-    }
-
     protected <T> T map(Object source, T target, MappingContext context) {
         return map(source, target, defaultMappingName, context);
     }
@@ -158,12 +153,7 @@ public class ObjectMapperImpl implements ObjectMapper, BeanPostProcessor {
         return target;
     }
 
-    @Override
-    public <T> T map(Object source, Class<T> targetClass) {
-        return map(source, targetClass, defaultMappingName);
-    }
-
-    public <T> T map(Object source, Class<T> targetClass, MappingContext context) {
+    protected <T> T map(Object source, Class<T> targetClass, MappingContext context) {
         return map(source, targetClass, defaultMappingName, context);
     }
 
@@ -186,11 +176,6 @@ public class ObjectMapperImpl implements ObjectMapper, BeanPostProcessor {
         return result;
     }
 
-    @Override
-    public <C extends Collection<T>, T> C map(Collection sourceCollection, Class<T> targetClass, C resultCollection) {
-        return map(sourceCollection, targetClass, resultCollection, defaultMappingName);
-    }
-
     protected  <C extends Collection<T>, T> C map(Collection sourceCollection, Class<T> targetClass, C resultCollection,
                                                   MappingContext context) {
         return map(sourceCollection, targetClass, resultCollection, defaultMappingName, context);
@@ -210,11 +195,6 @@ public class ObjectMapperImpl implements ObjectMapper, BeanPostProcessor {
         return resultCollection;
     }
 
-    @Override
-    public <S, C extends Map<S, T>, T> C map(Collection<S> sourceCollection, Class<T> targetClass, C resultCollection) {
-        return map(sourceCollection, targetClass, resultCollection, getEmptyContext());
-    }
-
     protected <S, C extends Map<S, T>, T> C map(Collection<S> sourceCollection, Class<T> targetClass, C resultCollection,
                                                 MappingContext context) {
         return map(sourceCollection, targetClass, resultCollection, defaultMappingName, context) ;
@@ -232,11 +212,6 @@ public class ObjectMapperImpl implements ObjectMapper, BeanPostProcessor {
             resultCollection.put(source, map(source, targetClass, mappingName, context));
         }
         return resultCollection;
-    }
-
-    @Override
-    public <T> T[] map(Collection sourceCollection, Class<T> targetClass) {
-        return map(sourceCollection, targetClass, defaultMappingName);
     }
 
     protected  <T> T[] map(Collection sourceCollection, Class<T> targetClass, MappingContext context) {

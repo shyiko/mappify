@@ -18,7 +18,21 @@ package com.github.shyiko.mappigy.bare.spring;
 import java.lang.annotation.*;
 
 /**
- * Defines method-based mapping.
+ * Marks annotated method to be used for the object mapping.<p/>
+ * IMPORTANT: Method signature must conform either
+ * <pre>
+ *     public void methodName(TypeOfTheSourceObject sourceObject, TypeOfTheTargetObject targetObject) {
+ *         ...
+ *     }
+ * </pre>
+ * or
+ * <pre>
+ *     public void methodName(TypeOfTheSourceObject sourceObject, TypeOfTheTargetObject targetObject,
+ *                            MappingContext context) {
+ *         ...
+ *     }
+ * </pre>
+ * Otherwise method won't be recognized (and consequently used) by {@link ObjectMapperImpl}.
  * @see MappingProvider
  * @author <a href="mailto:stanley.shyiko@gmail.com">Stanley Shyiko</a>
  */
@@ -28,5 +42,8 @@ import java.lang.annotation.*;
 @Documented
 public @interface Mapping {
 
+    /**
+     * @return name of the mapping
+     */
     String value() default "";
 }

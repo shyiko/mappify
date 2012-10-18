@@ -15,6 +15,7 @@
  */
 package com.github.shyiko.mappigy.bare.spring;
 
+import com.github.shyiko.mappify.api.MappingContext;
 import com.github.shyiko.mappify.api.MappingException;
 import com.github.shyiko.mappify.api.ObjectMapper;
 import org.slf4j.Logger;
@@ -23,9 +24,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.stereotype.Component;
 
-import java.lang.reflect.Array;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.lang.reflect.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -38,8 +37,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ObjectMapperImpl implements ObjectMapper, BeanPostProcessor {
 
     private static final Logger logger = LoggerFactory.getLogger(ObjectMapperImpl.class);
-    private static final com.github.shyiko.mappify.api.Mapping[] DEFAULT_MAPPINGS = new com.github.shyiko.mappify.api.Mapping[0];
 
+    private String defaultMappingName = "";
     private Map<MappingKey, MappingValue> config = new ConcurrentHashMap<MappingKey, MappingValue>();
     private Method hibernateProxyHelperNarrowMethod;
 
@@ -48,7 +47,8 @@ public class ObjectMapperImpl implements ObjectMapper, BeanPostProcessor {
                hibernateProxyHelperNarrowMethodName = "getClassWithoutInitializingProxy";
         try {
             Class<?> hibernateProxyHelper = Class.forName(hibernateProxyHelperClass);
-            hibernateProxyHelperNarrowMethod = hibernateProxyHelper.getMethod(hibernateProxyHelperNarrowMethodName, Object.class);
+            hibernateProxyHelperNarrowMethod = hibernateProxyHelper.getMethod(hibernateProxyHelperNarrowMethodName,
+                    Object.class);
         } catch (ClassNotFoundException e) {
             if (logger.isDebugEnabled()) {
                 logger.debug(hibernateProxyHelperClass + " wasn't loaded. Hibernate proxy narrowing disabled.");
@@ -74,8 +74,9 @@ public class ObjectMapperImpl implements ObjectMapper, BeanPostProcessor {
                 Mapping mapping = method.getAnnotation(Mapping.class);
                 if (mapping != null) {
                     Class<?>[] parameterTypes = method.getParameterTypes();
-                    if (parameterTypes.length != 2) {
-                        logger.warn(method + " is annotated with @Mapping but do not present a valid mapping");
+                    if (parameterTypes.length != 2 && !(parameterTypes.length == 3 &&
+                            MappingContext.class.isAssignableFrom(parameterTypes[2]))) {
+                        logger.warn(method + " is annotated with @Mapping but does not present a valid mapping");
                         continue;
                     }
                     Class sourceClass = parameterTypes[0];
@@ -89,31 +90,47 @@ public class ObjectMapperImpl implements ObjectMapper, BeanPostProcessor {
                          message.append("from ").append(sourceClass).append(" to ").append(targetClass);
                         logger.debug(message.toString());
                     }
-                    config.put(new MappingKey(sourceClass, targetClass, mappingName), new MappingValue(bean, method));
+                    config.put(
+                            new MappingKey(sourceClass, targetClass, mappingName),
+                            new MappingValue(bean, method, parameterTypes.length == 3)
+                    );
                 }
             }
         }
         return bean;
     }
 
-    @Override
-    public ObjectMapper using(final com.github.shyiko.mappify.api.Mapping... mapping) {
-        return new ObjectMapperClosure(mapping, this);
+    protected MappingContext getEmptyContext() {
+        return new MappingContext();
     }
 
     @Override
-    public <T> void map(Object source, T target) {
-        map(source, target, DEFAULT_MAPPINGS);
+    public ObjectMapper using(final MappingContext context) {
+        return new ObjectMapperClosure(context);
     }
 
-    protected <T> void map(Object source, T target, com.github.shyiko.mappify.api.Mapping[] mappings) {
+    @Override
+    public <T> T map(Object source, T target) {
+        return map(source, target, defaultMappingName);
+    }
+
+    protected <T> T map(Object source, T target, MappingContext context) {
+        return map(source, target, defaultMappingName, context);
+    }
+
+    @Override
+    public <T> T map(Object source, T target, String mappingName) {
+        return map(source, target, mappingName, getEmptyContext());
+    }
+
+    protected <T> T map(Object source, T target, String mappingName, MappingContext context) {
         if (source == null) {
             throw new IllegalArgumentException("Source object cannot be null");
         }
         if (target == null) {
             throw new IllegalArgumentException("Target object cannot be null");
         }
-        MappingKey key = new MappingKey(deProxy(source), deProxy(target), getMappingName(mappings));
+        MappingKey key = new MappingKey(deProxy(source), deProxy(target), mappingName);
         MappingValue mapping = config.get(key);
         if (mapping == null) {
             MappingKey rootKey = key;
@@ -122,7 +139,7 @@ public class ObjectMapperImpl implements ObjectMapper, BeanPostProcessor {
                 if (sourceSuperClass == null) {
                     break;
                 }
-                key = new MappingKey(sourceSuperClass, key.targetClass, getMappingName(mappings));
+                key = new MappingKey(sourceSuperClass, key.targetClass, mappingName);
                 mapping = config.get(key);
             } while (mapping == null);
             if (mapping == null) {
@@ -132,29 +149,30 @@ public class ObjectMapperImpl implements ObjectMapper, BeanPostProcessor {
             config.put(key, mapping); // self-training
         }
         try {
-            mapping.method.invoke(mapping.bean, source, target);
+            Object[] arguments = mapping.requiresContext ?
+                    new Object[] {source, target, context} : new Object[] {source, target};
+            mapping.method.invoke(mapping.bean, arguments);
         } catch (Exception e) {
             throw new MappingException("Unable to map " + key.sourceClass + " to " + key.targetClass, e);
         }
-    }
-
-    private String getMappingName(com.github.shyiko.mappify.api.Mapping[] mappings) {
-        if (mappings != DEFAULT_MAPPINGS) {
-            for (com.github.shyiko.mappify.api.Mapping mapping : mappings) {
-                if (mapping instanceof com.github.shyiko.mappify.api.Mapping.NamedMapping) {
-                    return ((com.github.shyiko.mappify.api.Mapping.NamedMapping) mapping).getMappingName();
-                }
-            }
-        }
-        return "";
+        return target;
     }
 
     @Override
     public <T> T map(Object source, Class<T> targetClass) {
-        return map(source, targetClass, DEFAULT_MAPPINGS);
+        return map(source, targetClass, defaultMappingName);
     }
 
-    protected <T> T map(Object source, Class<T> targetClass, com.github.shyiko.mappify.api.Mapping[] mappings) {
+    public <T> T map(Object source, Class<T> targetClass, MappingContext context) {
+        return map(source, targetClass, defaultMappingName, context);
+    }
+
+    @Override
+    public <T> T map(Object source, Class<T> targetClass, String mappingName) {
+        return map(source, targetClass, mappingName, getEmptyContext());
+    }
+
+    protected <T> T map(Object source, Class<T> targetClass, String mappingName, MappingContext context) {
         if (source == null) {
             return null;
         }
@@ -164,73 +182,78 @@ public class ObjectMapperImpl implements ObjectMapper, BeanPostProcessor {
         } catch (Exception e) {
             throw new MappingException(targetClass + " has no default constructor", e);
         }
-        map(source, result, mappings);
+        map(source, result, mappingName, context);
         return result;
     }
 
     @Override
-    public <T> HashSet<T> mapToHashSet(Collection sources, Class<T> targetClass) {
-        return mapToHashSet(sources, targetClass, DEFAULT_MAPPINGS);
+    public <C extends Collection<T>, T> C map(Collection sourceCollection, Class<T> targetClass, C resultCollection) {
+        return map(sourceCollection, targetClass, resultCollection, defaultMappingName);
     }
 
-    protected  <T> HashSet<T> mapToHashSet(Collection sources, Class<T> targetClass, com.github.shyiko.mappify.api.Mapping[] mappings) {
-        HashSet<T> result = new HashSet<T>();
-        for (Object source : sources) {
-            result.add(map(source, targetClass, mappings));
+    protected  <C extends Collection<T>, T> C map(Collection sourceCollection, Class<T> targetClass, C resultCollection,
+                                                  MappingContext context) {
+        return map(sourceCollection, targetClass, resultCollection, defaultMappingName, context);
+    }
+
+    @Override
+    public <C extends Collection<T>, T> C map(Collection sourceCollection, Class<T> targetClass, C resultCollection,
+                                              String mappingName) {
+        return map(sourceCollection, targetClass, resultCollection, mappingName, getEmptyContext());
+    }
+
+    protected  <C extends Collection<T>, T> C map(Collection sourceCollection, Class<T> targetClass, C resultCollection,
+                                              String mappingName, MappingContext context) {
+        for (Object source : sourceCollection) {
+            resultCollection.add(map(source, targetClass, mappingName, context));
         }
-        return result;
+        return resultCollection;
     }
 
     @Override
-    public <T> TreeSet<T> mapToTreeSet(Collection sources, Class<T> targetClass) {
-        return mapToTreeSet(sources, targetClass, DEFAULT_MAPPINGS);
+    public <S, C extends Map<S, T>, T> C map(Collection<S> sourceCollection, Class<T> targetClass, C resultCollection) {
+        return map(sourceCollection, targetClass, resultCollection, getEmptyContext());
     }
 
-    protected <T> TreeSet<T> mapToTreeSet(Collection sources, Class<T> targetClass, com.github.shyiko.mappify.api.Mapping[] mappings) {
-        TreeSet<T> result = new TreeSet<T>();
-        for (Object source : sources) {
-            result.add(map(source, targetClass, mappings));
+    protected <S, C extends Map<S, T>, T> C map(Collection<S> sourceCollection, Class<T> targetClass, C resultCollection,
+                                                MappingContext context) {
+        return map(sourceCollection, targetClass, resultCollection, defaultMappingName, context) ;
+    }
+
+    @Override
+    public <S, C extends Map<S, T>, T> C map(Collection<S> sourceCollection, Class<T> targetClass, C resultCollection,
+                                             String mappingName) {
+        return map(sourceCollection, targetClass, resultCollection, mappingName, getEmptyContext());
+    }
+
+    protected <S, C extends Map<S, T>, T> C map(Collection<S> sourceCollection, Class<T> targetClass, C resultCollection,
+                                                String mappingName, MappingContext context) {
+        for (S source : sourceCollection) {
+            resultCollection.put(source, map(source, targetClass, mappingName, context));
         }
-        return result;
+        return resultCollection;
     }
 
     @Override
-    public <T> LinkedList<T> mapToLinkedList(Collection sources, Class<T> targetClass) {
-        return mapToLinkedList(sources, targetClass, DEFAULT_MAPPINGS);
+    public <T> T[] map(Collection sourceCollection, Class<T> targetClass) {
+        return map(sourceCollection, targetClass, defaultMappingName);
     }
 
-    protected <T> LinkedList<T> mapToLinkedList(Collection sources, Class<T> targetClass, com.github.shyiko.mappify.api.Mapping[] mappings) {
-        LinkedList<T> result = new LinkedList<T>();
-        for (Object source : sources) {
-            result.add(map(source, targetClass, mappings));
-        }
-        return result;
+    protected  <T> T[] map(Collection sourceCollection, Class<T> targetClass, MappingContext context) {
+        return map(sourceCollection, targetClass, defaultMappingName, context);
     }
 
     @Override
-    public <T> ArrayList<T> mapToArrayList(Collection sources, Class<T> targetClass) {
-        return mapToArrayList(sources, targetClass, DEFAULT_MAPPINGS);
-    }
-
-    protected <T> ArrayList<T> mapToArrayList(Collection sources, Class<T> targetClass, com.github.shyiko.mappify.api.Mapping[] mappings) {
-        ArrayList<T> result = new ArrayList<T>(sources.size());
-        for (Object source : sources) {
-            result.add(map(source, targetClass, mappings));
-        }
-        return result;
-    }
-
-    @Override
-    public <T> T[] mapToArray(Collection sources, Class<T> targetClass) {
-        return mapToArray(sources, targetClass, DEFAULT_MAPPINGS);
+    public <T> T[] map(Collection sourceCollection, Class<T> targetClass, String mappingName) {
+        return map(sourceCollection, targetClass, mappingName, getEmptyContext());
     }
 
     @SuppressWarnings("unchecked")
-    protected <T> T[] mapToArray(Collection sources, Class<T> targetClass, com.github.shyiko.mappify.api.Mapping[] mappings) {
-        T[] result = (T[]) Array.newInstance(targetClass, sources.size());
+    protected <T> T[] map(Collection sourceCollection, Class<T> targetClass, String mappingName, MappingContext context) {
+        T[] result = (T[]) Array.newInstance(targetClass, sourceCollection.size());
         int i = 0;
-        for (Object source : sources) {
-            result[i++] = map(source, targetClass, mappings);
+        for (Object source : sourceCollection) {
+            result[i++] = map(source, targetClass, mappingName, context);
         }
         return result;
     }
@@ -293,61 +316,84 @@ public class ObjectMapperImpl implements ObjectMapper, BeanPostProcessor {
 
         private final Object bean;
         private final Method method;
+        private final boolean requiresContext;
 
-        private MappingValue(Object bean, Method method) {
+        private MappingValue(Object bean, Method method, boolean requiresContext) {
             this.bean = bean;
             this.method = method;
+            this.requiresContext = requiresContext;
         }
     }
 
-    private static class ObjectMapperClosure extends ObjectMapperImpl {
+    /**
+     * Much easier and shorter way would be to use JDK Proxy over ObjectMapper, but due to the number of reasons
+     * (e.g. dynamic method resolution, no compile-time checks), the change is deferred until really needed.
+     */
+    private class ObjectMapperClosure implements ObjectMapper {
 
-        private com.github.shyiko.mappify.api.Mapping[] mappings;
         private ObjectMapperImpl objectMapper;
+        private MappingContext context;
 
-        private ObjectMapperClosure(com.github.shyiko.mappify.api.Mapping[] mappings, ObjectMapperImpl objectMapper) {
-            this.mappings = mappings;
-            this.objectMapper = objectMapper;
+        private ObjectMapperClosure(MappingContext context) {
+            this.objectMapper = ObjectMapperImpl.this;
+            this.context = context;
         }
 
         @Override
-        public ObjectMapper using(com.github.shyiko.mappify.api.Mapping... mapping) {
-            return new ObjectMapperClosure(mappings, this);
+        public ObjectMapper using(MappingContext context) {
+            return new ObjectMapperClosure(context);
         }
 
         @Override
-        public <T> void map(Object source, T target) {
-            objectMapper.map(source, target, mappings);
+        public <T> T map(Object source, T target) {
+            return objectMapper.map(source, target, context);
+        }
+
+        @Override
+        public <T> T map(Object source, T target, String mappingName) {
+            return objectMapper.map(source, target, mappingName, context);
         }
 
         @Override
         public <T> T map(Object source, Class<T> targetClass) {
-            return objectMapper.map(source, targetClass, mappings);
+            return objectMapper.map(source, targetClass, context);
         }
 
         @Override
-        public <T> HashSet<T> mapToHashSet(Collection sources, Class<T> targetClass) {
-            return objectMapper.mapToHashSet(sources, targetClass, mappings);
+        public <T> T map(Object source, Class<T> targetClass, String mappingName) {
+            return objectMapper.map(source, targetClass, mappingName, context);
         }
 
         @Override
-        public <T> TreeSet<T> mapToTreeSet(Collection sources, Class<T> targetClass) {
-            return objectMapper.mapToTreeSet(sources, targetClass, mappings);
+        public <C extends Collection<T>, T> C map(Collection sourceCollection, Class<T> targetClass, C resultCollection) {
+            return objectMapper.map(sourceCollection, targetClass, resultCollection, context);
         }
 
         @Override
-        public <T> LinkedList<T> mapToLinkedList(Collection sources, Class<T> targetClass) {
-            return objectMapper.mapToLinkedList(sources, targetClass, mappings);
+        public <C extends Collection<T>, T> C map(Collection sourceCollection, Class<T> targetClass, C resultCollection,
+                                                  String mappingName) {
+            return objectMapper.map(sourceCollection, targetClass, resultCollection, mappingName, context);
         }
 
         @Override
-        public <T> ArrayList<T> mapToArrayList(Collection sources, Class<T> targetClass) {
-            return objectMapper.mapToArrayList(sources, targetClass, mappings);
+        public <S, C extends Map<S, T>, T> C map(Collection<S> sourceCollection, Class<T> targetClass, C resultCollection) {
+            return objectMapper.map(sourceCollection, targetClass, resultCollection, context);
         }
 
         @Override
-        public <T> T[] mapToArray(Collection sources, Class<T> targetClass) {
-            return objectMapper.mapToArray(sources, targetClass, mappings);
+        public <S, C extends Map<S, T>, T> C map(Collection<S> sourceCollection, Class<T> targetClass, C resultCollection,
+                                                 String mappingName) {
+            return objectMapper.map(sourceCollection, targetClass, resultCollection, mappingName, context);
+        }
+
+        @Override
+        public <T> T[] map(Collection sourceCollection, Class<T> targetClass) {
+            return objectMapper.map(sourceCollection, targetClass, context);
+        }
+
+        @Override
+        public <T> T[] map(Collection sourceCollection, Class<T> targetClass, String mappingName) {
+            return objectMapper.map(sourceCollection, targetClass, mappingName, context);
         }
     }
 }

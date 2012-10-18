@@ -16,7 +16,7 @@
 package com.github.shyiko.mappify.api;
 
 /**
- * Generic exception for all mapping-related exceptions.
+ * Generic exception for the all mapping-related exceptions.
  * @author <a href="mailto:stanley.shyiko@gmail.com">Stanley Shyiko</a>
  */
 public class MappingException extends RuntimeException {

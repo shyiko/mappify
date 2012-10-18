@@ -18,65 +18,130 @@ package com.github.shyiko.mappify.api;
 import java.util.*;
 
 /**
- * Defines contract for object mappings.
+ * Contract for the object mapper.
  * @author <a href="mailto:stanley.shyiko@gmail.com">Stanley Shyiko</a>
  */
 public interface ObjectMapper {
 
-    ObjectMapper using(Mapping... mapping);
+    /**
+     * Overlay current mapping context with a custom one. Note that context is bound only to the object being returned.
+     * That is, objectMapper and objectMapper.using(...) will have different mapping contexts.
+     * @param context mapping context
+     * @return object mapper bound to the provided mapping context
+     */
+    ObjectMapper using(MappingContext context);
 
     /**
-     * Perform mapping from source to target.
+     * Map the source object onto the target one.
      * @param source source object
      * @param target target object
+     * @return target object
+     * @throws MappingException in case of failure during the mapping process
      */
-    <T> void map(Object source, T target);
+    <T> T map(Object source, T target);
 
     /**
-     * Perform mapping form source object to target class.
+     * Map the source object onto the target one using a custom mapping.
+     * @param source source object
+     * @param target target object
+     * @param mappingName mapping name
+     * @param <T> return type
+     * @return target object
+     * @throws MappingException in case of failure during the mapping process
+     */
+    <T> T map(Object source, T target, String mappingName);
+
+    /**
+     * Perform mapping form the source object to the target class.
      * @param source source object. nullable
      * @param targetClass target class
-     * @return null if source is null, otherwise mapped instance of target class
+     * @param <T> return type
+     * @return null if source is null, otherwise mapped instance of the target class
+     * @throws MappingException in case of failure during the mapping process
      */
     <T> T map(Object source, Class<T> targetClass);
 
     /**
-     * Perform mapping of objects provided by sources parameter.
-     * @param sources collection of objects
+     * Perform mapping form the source object to the target class using a custom mapping.
+     * @param source source object. nullable
      * @param targetClass target class
-     * @return {@link HashSet} containing mapped instances. never null
+     * @param mappingName mapping name
+     * @param <T> return type
+     * @return null if source is null, otherwise mapped instance of the target class
+     * @throws MappingException in case of failure during the mapping process
      */
-    <T> HashSet<T> mapToHashSet(Collection sources, Class<T> targetClass);
+    <T> T map(Object source, Class<T> targetClass, String mappingName);
 
     /**
-     * Perform mapping of objects provided by sources parameter.
-     * @param sources collection of objects
+     * Map the objects and add the result to the requested collection.
+     * @param sourceCollection collection of objects to map
      * @param targetClass target class
-     * @return {@link TreeSet} containing mapped instances. never null
+     * @param resultCollection collection to hold the result
+     * @param <C> collection type
+     * @param <T> return type
+     * @return collection of mapped objects
+     * @throws MappingException in case of failure during the mapping process
      */
-    <T> TreeSet<T> mapToTreeSet(Collection sources, Class<T> targetClass);
+    <C extends Collection<T>, T> C map(Collection sourceCollection, Class<T> targetClass, C resultCollection);
 
     /**
-     * Perform mapping of objects provided by sources parameter.
-     * @param sources collection of objects
+     * Map the objects using a custom mapping and add the result to the requested collection.
+     * @param sourceCollection collection of objects to map
      * @param targetClass target class
-     * @return {@link LinkedList} containing mapped instances. never null
+     * @param resultCollection collection to hold the result
+     * @param mappingName mapping name
+     * @param <C> collection type
+     * @param <T> return type
+     * @return collection of mapped objects
+     * @throws MappingException in case of failure during the mapping process
      */
-    <T> LinkedList<T> mapToLinkedList(Collection sources, Class<T> targetClass);
+    <C extends Collection<T>, T> C map(Collection sourceCollection, Class<T> targetClass, C resultCollection, String mappingName);
 
     /**
-     * Perform mapping of objects provided by sources parameter.
-     * @param sources collection of objects
+     * Map the objects and add the result to the requested map.
+     * @param sourceCollection collection of objects to map
      * @param targetClass target class
-     * @return {@link ArrayList} containing mapped instances. never null
+     * @param resultCollection collection to hold the result
+     * @param <S> source type
+     * @param <C> collection type
+     * @param <T> return type
+     * @return collection of mapped objects
+     * @throws MappingException in case of failure during the mapping process
      */
-    <T> ArrayList<T> mapToArrayList(Collection sources, Class<T> targetClass);
+    <S, C extends Map<S, T>, T> C map(Collection<S> sourceCollection, Class<T> targetClass, C resultCollection);
 
     /**
-     * Perform mapping of objects provided by sources parameter.
-     * @param sources collection of objects
+     * Map the objects using a custom mapping and add the result to the requested map.
+     * @param sourceCollection collection of objects to map
      * @param targetClass target class
+     * @param resultCollection collection to hold the result
+     * @param mappingName mapping name
+     * @param <S> source type
+     * @param <C> collection type
+     * @param <T> return type
+     * @return collection of mapped objects
+     * @throws MappingException in case of failure during the mapping process
+     */
+    <S, C extends Map<S, T>, T> C map(Collection<S> sourceCollection, Class<T> targetClass, C resultCollection, String mappingName);
+
+    /**
+     * Map the objects and return the result in form of an array.
+     * @param sourceCollection collection of objects to map
+     * @param targetClass target class
+     * @param <T> return type
      * @return array containing mapped instances. never null
+     * @throws MappingException in case of failure during the mapping process
      */
-    <T> T[] mapToArray(Collection sources, Class<T> targetClass);
+    <T> T[] map(Collection sourceCollection, Class<T> targetClass);
+
+    /**
+     * Map the objects using a custom mapping and return the result in form of an array.
+     * @param sourceCollection collection of objects to map
+     * @param targetClass target class
+     * @param mappingName mapping name
+     * @param <T> return type
+     * @return array containing mapped instances. never null
+     * @throws MappingException in case of failure during the mapping process
+     */
+    <T> T[] map(Collection sourceCollection, Class<T> targetClass, String mappingName);
 }

@@ -1,4 +1,4 @@
-    # mappify
+# mappify
 
 Dead-simple object mapping in Java.
 

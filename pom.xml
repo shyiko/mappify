@@ -33,7 +33,7 @@
 
     <modules>
         <module>mappify-api</module>
-        <module>mappify-bare-spring</module>
+        <module>mappify-handcraft-spring</module>
     </modules>
 
     <scm>

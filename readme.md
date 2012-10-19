@@ -4,7 +4,7 @@ Dead-simple object mapping in Java.
 
 ## Usage
 
-0. Add Maven dependency
+0.Add Maven dependency
 
 ```xml
 <dependency>
@@ -14,13 +14,13 @@ Dead-simple object mapping in Java.
 </dependency>
 ```
 
-1. Add the following line to your spring context
+1.Add the following line to your spring context
 
 ```xml
 <import resource="classpath:mappify-handcraft-spring-context.xml"/>
 ```
 
-2. Define mappings
+2.Define mappings
 
 ```java
 @MappingProvider
@@ -43,7 +43,7 @@ public class EntityMappingProvider {
 > NOTE: @MappingProvider extends @Controller. As a result, mapping providers can be discovered with Spring's 
 `<context:component-scan .../>`. Otherwise, they need to be hooked up using `<bean ... class="mapping provider class"/>`.
 
-3. Call the ObjectMapper
+3.Call the ObjectMapper
 
 ```java
     @Autowired

@@ -34,7 +34,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * for {@link MappingProvider} annotated beans.
  * @author <a href="mailto:stanley.shyiko@gmail.com">Stanley Shyiko</a>
  */
-@Component
+@Component("objectMapper")
 public class ObjectMapperImpl extends AbstractObjectMapper implements ObjectMapper, BeanPostProcessor {
 
     private static final Logger logger = LoggerFactory.getLogger(ObjectMapperImpl.class);
@@ -69,7 +69,7 @@ public class ObjectMapperImpl extends AbstractObjectMapper implements ObjectMapp
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
         if (bean.getClass().isAnnotationPresent(MappingProvider.class)) {
-            Method[] methods = bean.getClass().getMethods();
+            Method[] methods = bean.getClass().getDeclaredMethods();
             for (Method method : methods) {
                 Mapping mapping = method.getAnnotation(Mapping.class);
                 if (mapping != null) {

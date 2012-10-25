@@ -10,7 +10,7 @@ Dead-simple object mapping in Java.
 <dependency>
     <groupId>com.github.shyiko.mappify</groupId>
     <artifactId>mappify-handcraft-spring</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
+    <version>0.1.0</version>
 </dependency>
 ```
 

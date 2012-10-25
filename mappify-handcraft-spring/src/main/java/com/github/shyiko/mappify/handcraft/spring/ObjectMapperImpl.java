@@ -176,6 +176,12 @@ public class ObjectMapperImpl extends AbstractObjectMapper implements ObjectMapp
         return result;
     }
 
+    private void assertNotNull(Collection sourceCollection) {
+        if (sourceCollection == null) {
+            throw new MappingException("Source collection must never be NULL");
+        }
+    }
+
     protected  <C extends Collection<T>, T> C map(Collection sourceCollection, Class<T> targetClass, C resultCollection,
                                                   MappingContext context) {
         return map(sourceCollection, targetClass, resultCollection, defaultMappingName, context);
@@ -189,6 +195,7 @@ public class ObjectMapperImpl extends AbstractObjectMapper implements ObjectMapp
 
     protected  <C extends Collection<T>, T> C map(Collection sourceCollection, Class<T> targetClass, C resultCollection,
                                               String mappingName, MappingContext context) {
+        assertNotNull(sourceCollection);
         for (Object source : sourceCollection) {
             resultCollection.add(map(source, targetClass, mappingName, context));
         }
@@ -208,6 +215,7 @@ public class ObjectMapperImpl extends AbstractObjectMapper implements ObjectMapp
 
     protected <S, C extends Map<S, T>, T> C map(Collection<S> sourceCollection, Class<T> targetClass, C resultCollection,
                                                 String mappingName, MappingContext context) {
+        assertNotNull(sourceCollection);
         for (S source : sourceCollection) {
             resultCollection.put(source, map(source, targetClass, mappingName, context));
         }
@@ -225,6 +233,7 @@ public class ObjectMapperImpl extends AbstractObjectMapper implements ObjectMapp
 
     @SuppressWarnings("unchecked")
     protected <T> T[] map(Collection sourceCollection, Class<T> targetClass, String mappingName, MappingContext context) {
+        assertNotNull(sourceCollection);
         T[] result = (T[]) Array.newInstance(targetClass, sourceCollection.size());
         int i = 0;
         for (Object source : sourceCollection) {

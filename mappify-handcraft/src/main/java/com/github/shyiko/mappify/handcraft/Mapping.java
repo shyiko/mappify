@@ -19,18 +19,26 @@ import java.lang.annotation.*;
 
 /**
  * Marks method to be used for the object mapping.<p/>
- * IMPORTANT: Method signature must conform either
+ * Method signature must conform either
  * <pre>
- *     public void methodName(TypeOfTheSourceObject sourceObject, TypeOfTheTargetObject targetObject) {
- *         ...
- *     }
+ * public void methodName(TypeOfTheSourceObject sourceObject, TypeOfTheTargetObject targetObject) { ... }
  * </pre>
  * or
  * <pre>
- *     public void methodName(TypeOfTheSourceObject sourceObject, TypeOfTheTargetObject targetObject,
- *                            MappingContext context) {
- *         ...
- *     }
+ * public void methodName(TypeOfTheSourceObject sourceObject, TypeOfTheTargetObject targetObject,
+ * MappingContext context) { ... }
+ * </pre>
+ * or
+ * <pre>
+ * public TypeOfTheTargetObject methodName(TypeOfTheSourceObject sourceObject) { ... }
+ * // for obvious reasons, this type of mapping requires TypeOfTheTargetObject.class to be specified
+ * // as a second parameter for Mapper.map(...) calls
+ * </pre>
+ * or
+ * <pre>
+ * public TypeOfTheTargetObject methodName(TypeOfTheSourceObject sourceObject, MappingContext context) { ... }
+ * // for obvious reasons, this type of mapping requires TypeOfTheTargetObject.class to be specified
+ * // as a second parameter for Mapper.map(...) calls
  * </pre>
  * @author <a href="mailto:stanley.shyiko@gmail.com">Stanley Shyiko</a>
  */

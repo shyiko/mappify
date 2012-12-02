@@ -22,9 +22,9 @@ import com.github.shyiko.mappify.api.MappingException;
  *
  * @author <a href="mailto:stanley.shyiko@gmail.com">Stanley Shyiko</a>
  */
-public class MappingNotFoundException extends MappingException {
+public class MappingDefinitionNotFoundException extends MappingException {
 
-    public MappingNotFoundException(String message) {
+    public MappingDefinitionNotFoundException(String message) {
         super(message);
     }
 }

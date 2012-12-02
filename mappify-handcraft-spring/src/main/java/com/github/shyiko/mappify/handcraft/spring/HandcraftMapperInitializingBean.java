@@ -42,7 +42,7 @@ public class HandcraftMapperInitializingBean implements BeanPostProcessor {
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
         if (bean.getClass().isAnnotationPresent(MappingProvider.class)) {
-            Collection<HandcraftMapper.MappingIdentifier> mappings = mapper.loadMappingsFrom(bean);
+            Collection<HandcraftMapper.MappingIdentifier> mappings = mapper.register(bean);
             if (logger.isDebugEnabled()) {
                 for (HandcraftMapper.MappingIdentifier mapping : mappings) {
                     logger.debug("Discovered mapping " + mapping);

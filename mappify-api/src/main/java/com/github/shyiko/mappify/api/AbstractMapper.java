@@ -80,13 +80,17 @@ public abstract class AbstractMapper implements Mapper {
         if (source == null) {
             return null;
         }
+        assertNotNull(targetClass, "Target class cannot be null");
+        return map(source, newInstance(targetClass), mappingName, mappingContext);
+    }
+
+    protected <T> T newInstance(Class<T> targetClass) {
         T result;
         try {
             result = targetClass.newInstance();
         } catch (Exception e) {
-            throw new MappingException(targetClass + " has no default constructor", e);
+            throw new MappingException("Class" + targetClass + " has no default constructor", e);
         }
-        map(source, result, mappingName, mappingContext);
         return result;
     }
 
@@ -111,16 +115,16 @@ public abstract class AbstractMapper implements Mapper {
     public <C extends Collection<T>, T> C map(
             Collection sourceCollection, Class<T> targetClass, C targetCollection, String mappingName,
             MappingContext mappingContext) {
-        assertNotNull(sourceCollection);
+        assertNotNull(sourceCollection, "Source collection must never be null");
         for (Object source : sourceCollection) {
             targetCollection.add(map(source, targetClass, mappingName, mappingContext));
         }
         return targetCollection;
     }
 
-    protected void assertNotNull(Collection sourceCollection) {
-        if (sourceCollection == null) {
-            throw new MappingException("Source collection must never be NULL");
+    protected void assertNotNull(Object object, String exceptionMessage) {
+        if (object == null) {
+            throw new MappingException(exceptionMessage);
         }
     }
 
@@ -145,7 +149,7 @@ public abstract class AbstractMapper implements Mapper {
     public <S, C extends Map<S, T>, T> C map(
             Collection<S> sourceCollection, Class<T> targetClass, C targetMap, String mappingName,
             MappingContext mappingContext) {
-        assertNotNull(sourceCollection);
+        assertNotNull(sourceCollection, "Source collection must never be null");
         for (S source : sourceCollection) {
             targetMap.put(source, map(source, targetClass, mappingName, mappingContext));
         }
@@ -171,7 +175,7 @@ public abstract class AbstractMapper implements Mapper {
     @Override
     public <T> T[] map(
             Collection sourceCollection, Class<T> targetClass, String mappingName, MappingContext mappingContext) {
-        assertNotNull(sourceCollection);
+        assertNotNull(sourceCollection, "Source collection must never be null");
         T[] result = (T[]) Array.newInstance(targetClass, sourceCollection.size());
         int i = 0;
         for (Object source : sourceCollection) {

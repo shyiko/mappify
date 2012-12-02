@@ -18,14 +18,13 @@ package com.github.shyiko.mappify.handcraft;
 import com.github.shyiko.mappify.api.MappingException;
 
 /**
- * Thrown by {@link HandcraftMapper#register(Object)} in case it spots wrong {@link Mapping}-annotated
- * method.
+ * Thrown by {@link HandcraftMapper#register(Object)} in case it spots duplicate mapping definition.
  *
  * @author <a href="mailto:stanley.shyiko@gmail.com">Stanley Shyiko</a>
  */
-public class IllegalMappingDefinitionException extends MappingException {
+public class DuplicateMappingDefinitionException extends MappingException {
 
-    public IllegalMappingDefinitionException(String message) {
+    public DuplicateMappingDefinitionException(String message) {
         super(message);
     }
 }

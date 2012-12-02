@@ -33,7 +33,7 @@ class MappingProvider {
 
 ```java
 Mapper mapper = new HandcraftMapper();
-mapper.loadMappingsFrom(new MappingProvider()); // call this method for each mapping provider you have
+mapper.register(new MappingProvider()); // call this method for each mapping provider you have
 ```
 
 3. Use it across the application

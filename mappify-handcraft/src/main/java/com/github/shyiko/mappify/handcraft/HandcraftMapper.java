@@ -74,7 +74,19 @@ public class HandcraftMapper extends AbstractMapper {
                     key.targetClass + " has not been defined");
         }
         try {
-            return (T) mapping.invoke(key, source, target, mappingContext);
+            if (mapping.returnsTarget) {
+                if (target != null) {
+                    throw new MappingException("'" + key + "' cannot be used for overlay mapping");
+                }
+                return (T) mapping.method.invoke(mapping.delegatee, mapping.requiresContext ?
+                        new Object[]{source, mappingContext} : new Object[]{source});
+            }
+            if (target == null) {
+                target = (T) newInstance(key.targetClass);
+            }
+            mapping.method.invoke(mapping.delegatee, mapping.requiresContext ?
+                    new Object[]{source, target, mappingContext} : new Object[]{source, target});
+            return target;
         } catch (Exception e) {
             throw new MappingException("Unable to map " + key.sourceClass + " to " + key.targetClass, e);
         }
@@ -113,7 +125,7 @@ public class HandcraftMapper extends AbstractMapper {
         }
         MappingIdentifier key = new MappingIdentifier(parameterTypes[0], returnType == Void.TYPE ?
                 parameterTypes[1] : returnType, mappingName);
-        MappingDelegate mappingDelegate = new ReflectionBasedMappingDelegate(mappingProvider, method);
+        MappingDelegate mappingDelegate = new MappingDelegate(mappingProvider, method);
         assertNotAlreadyRegistered(key, mappingDelegate);
         config.put(key, mappingDelegate);
         return key;
@@ -196,45 +208,20 @@ public class HandcraftMapper extends AbstractMapper {
         }
     }
 
-    protected interface MappingDelegate {
+    private static final class MappingDelegate {
 
-        Object invoke(MappingIdentifier definition, Object source, Object target,
-                      MappingContext mappingContext) throws Exception;
-    }
-
-    protected class ReflectionBasedMappingDelegate implements MappingDelegate {
-
-        private final Object bean;
+        private final Object delegatee;
         private final Method method;
         private final boolean requiresContext;
-        private final boolean overlayMapping;
+        private final boolean returnsTarget;
 
-        public ReflectionBasedMappingDelegate(Object bean, Method method) {
-            this.bean = bean;
+        public MappingDelegate(Object delegatee, Method method) {
+            this.delegatee = delegatee;
             this.method = method;
             Class<?>[] parameterTypes = method.getParameterTypes();
             this.requiresContext = MappingContext.class.
                     isAssignableFrom(parameterTypes[parameterTypes.length - 1]);
-            overlayMapping = method.getReturnType() == Void.TYPE;
-        }
-
-        @SuppressWarnings("unchecked")
-        @Override
-        public Object invoke(MappingIdentifier definition, Object source, Object target,
-                             MappingContext mappingContext) throws Exception {
-            if (overlayMapping) {
-                if (target == null) {
-                    target = HandcraftMapper.this.newInstance(definition.targetClass);
-                }
-                method.invoke(bean, requiresContext ?
-                        new Object[]{source, target, mappingContext} : new Object[]{source, target});
-                return target;
-            }
-            if (target != null) {
-                throw new MappingException("Mapping " + definition + " cannot be used for overlay mapping");
-            }
-            return method.invoke(bean, requiresContext ?
-                    new Object[]{source, mappingContext} : new Object[]{source});
+            returnsTarget = method.getReturnType() != Void.TYPE;
         }
 
         @Override

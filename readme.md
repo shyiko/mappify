@@ -100,7 +100,7 @@ public class EntityMappingProvider {
 ### Testing with Mockito
 
     Mapper mapper = mock(AbstractMapper.class, Mockito.CALLS_REAL_METHODS);
-    when(mapper.map(any(<source class>), any(<target class>), anyString(), any(MappingContext.class))).then(...);
+    do...(...).when(mapper).map(any(), any(), anyString(), any(MappingContext.class));
 
 ## License
 

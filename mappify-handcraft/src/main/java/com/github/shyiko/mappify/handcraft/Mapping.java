@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.shyiko.mappify.handcraft.spring;
+package com.github.shyiko.mappify.handcraft;
 
 import java.lang.annotation.*;
 
 /**
- * Marks annotated method to be used for the object mapping.<p/>
+ * Marks method to be used for the object mapping.<p/>
  * IMPORTANT: Method signature must conform either
  * <pre>
  *     public void methodName(TypeOfTheSourceObject sourceObject, TypeOfTheTargetObject targetObject) {
@@ -32,8 +32,6 @@ import java.lang.annotation.*;
  *         ...
  *     }
  * </pre>
- * Otherwise method won't be recognized (and consequently used) by {@link ObjectMapperImpl}.
- * @see MappingProvider
  * @author <a href="mailto:stanley.shyiko@gmail.com">Stanley Shyiko</a>
  */
 @Target(ElementType.METHOD)

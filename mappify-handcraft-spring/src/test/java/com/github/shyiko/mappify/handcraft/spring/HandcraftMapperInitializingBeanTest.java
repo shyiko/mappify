@@ -15,6 +15,8 @@
  */
 package com.github.shyiko.mappify.handcraft.spring;
 
+import com.github.shyiko.mappify.api.Mapper;
+import com.github.shyiko.mappify.handcraft.Mapping;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
@@ -31,15 +33,15 @@ import static org.testng.Assert.assertEquals;
  */
 @MappingProvider
 @ContextConfiguration(locations = {"classpath:mappify-handcraft-spring-context-test.xml"})
-public class ObjectMapperImplTest extends AbstractTestNGSpringContextTests {
+public class HandcraftMapperInitializingBeanTest extends AbstractTestNGSpringContextTests {
 
     @Autowired
-    private ObjectMapperImpl objectMapper;
+    private Mapper mapper;
 
     @Test
     public void testMapping() {
         Entity entity = new Entity(1, Arrays.asList(new EntityProperty("p1"), new EntityProperty("p2")));
-        EntityDTO dto = objectMapper.map(entity, EntityDTO.class);
+        EntityDTO dto = mapper.map(entity, EntityDTO.class);
         assertEquals(dto.id, 1);
         assertEquals(dto.properties.size(), 2);
     }
@@ -47,7 +49,7 @@ public class ObjectMapperImplTest extends AbstractTestNGSpringContextTests {
     @Mapping
     public void mapToDTO(Entity entity, EntityDTO entityDTO) {
         entityDTO.id = entity.id;
-        entityDTO.properties = objectMapper.map(entity.properties, EntityPropertyDTO.class,
+        entityDTO.properties = mapper.map(entity.properties, EntityPropertyDTO.class,
                 new LinkedList<EntityPropertyDTO>());
     }
 
@@ -57,39 +59,27 @@ public class ObjectMapperImplTest extends AbstractTestNGSpringContextTests {
     }
 
     public static class Entity {
-
         private int id;
         private Collection<EntityProperty> properties;
-
-        public Entity() {
-        }
-
         public Entity(int id, Collection<EntityProperty> properties) {
             this.id = id;
             this.properties = properties;
         }
     }
 
-    public static class EntityDTO {
-
-        private int id;
-        private Collection<EntityPropertyDTO> properties;
-    }
-
     public static class EntityProperty {
-
         private String name;
-
-        public EntityProperty() {
-        }
-
         public EntityProperty(String name) {
             this.name = name;
         }
     }
 
-    public static class EntityPropertyDTO {
+    public static class EntityDTO {
+        private int id;
+        private Collection<EntityPropertyDTO> properties;
+    }
 
+    public static class EntityPropertyDTO {
         private String name;
     }
 }

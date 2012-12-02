@@ -13,20 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.shyiko.mappify.api;
+package com.github.shyiko.mappify.handcraft;
 
 /**
- * Generic exception for the all mapping-related exceptions.
+ * Proxy narrowing strategy.
  *
  * @author <a href="mailto:stanley.shyiko@gmail.com">Stanley Shyiko</a>
  */
-public class MappingException extends RuntimeException {
+public interface ProxyNarrowingStrategy {
 
-    public MappingException(String message) {
-        super(message);
-    }
-
-    public MappingException(String message, Throwable cause) {
-        super(message, cause);
-    }
+    Class narrow(Object target);
 }

@@ -8,14 +8,9 @@
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>mappify-handcraft-spring</artifactId>
+    <artifactId>mappify-handcraft</artifactId>
 
     <dependencies>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-            <version>3.1.2.RELEASE</version>
-        </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
@@ -23,19 +18,13 @@
         </dependency>
         <dependency>
             <groupId>com.github.shyiko.mappify</groupId>
-            <artifactId>mappify-handcraft</artifactId>
+            <artifactId>mappify-api</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
             <version>6.1.1</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-test</artifactId>
-            <version>3.1.2.RELEASE</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

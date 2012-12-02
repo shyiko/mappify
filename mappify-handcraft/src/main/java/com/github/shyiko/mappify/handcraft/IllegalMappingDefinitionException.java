@@ -13,20 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.shyiko.mappify.api;
+package com.github.shyiko.mappify.handcraft;
+
+import com.github.shyiko.mappify.api.MappingException;
 
 /**
- * Generic exception for the all mapping-related exceptions.
+ * Thrown by {@link HandcraftMapper#loadMappingsFrom(Object)} in case it spots wrong {@link Mapping}-annotated
+ * method.
  *
  * @author <a href="mailto:stanley.shyiko@gmail.com">Stanley Shyiko</a>
  */
-public class MappingException extends RuntimeException {
+public class IllegalMappingDefinitionException extends MappingException {
 
-    public MappingException(String message) {
+    public IllegalMappingDefinitionException(String message) {
         super(message);
-    }
-
-    public MappingException(String message, Throwable cause) {
-        super(message, cause);
     }
 }

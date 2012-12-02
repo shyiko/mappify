@@ -20,8 +20,9 @@ import org.springframework.stereotype.Component;
 import java.lang.annotation.*;
 
 /**
- * Each class annotated with this annotation will be examined for {@link Mapping} methods.
- * @see ObjectMapperImpl
+ * Each class annotated with this annotation will be examined for {@link com.github.shyiko.mappify.handcraft.Mapping}
+ * methods by {@link HandcraftMapperInitializingBean}.
+ *
  * @author <a href="mailto:stanley.shyiko@gmail.com">Stanley Shyiko</a>
  */
 @Target(ElementType.TYPE)

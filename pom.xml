@@ -4,7 +4,7 @@
 
     <groupId>com.github.shyiko.mappify</groupId>
     <artifactId>mappify</artifactId>
-    <version>0.1.1-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>mappify</name>
@@ -31,6 +31,7 @@
 
     <modules>
         <module>mappify-api</module>
+        <module>mappify-handcraft</module>
         <module>mappify-handcraft-spring</module>
     </modules>
 

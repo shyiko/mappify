@@ -21,7 +21,9 @@ import java.util.Set;
 
 /**
  * Mapping context which is available to the mappers during the mapping process.
- * @see ObjectMapper#using(MappingContext)
+ * Implementation is not thread-safe. Thus, same instance of this class should not be shared between multiple
+ * threads.
+ *
  * @author <a href="mailto:stanley.shyiko@gmail.com">Stanley Shyiko</a>
  */
 public class MappingContext {
@@ -41,13 +43,16 @@ public class MappingContext {
         this.context = context;
     }
 
+    public MappingContext(MappingContext context) {
+        this.context.putAll(context.context);
+    }
+
     /**
-     *
      * Same as
      * <pre>
-     *     Map&lt;String, Object&gt; properties = new HashMap&lt;String, Object&gt;();
-     *     properties.put(key, value);
-     *     ... = new MappingContext(properties)
+     * Map&lt;String, Object&gt; properties = new HashMap&lt;String, Object&gt;();
+     * properties.put(key, value);
+     * ... = new MappingContext(properties)
      * </pre>
      * @param key key
      * @param value any object that needs to be available during the mapping process
@@ -64,6 +69,10 @@ public class MappingContext {
     @SuppressWarnings("unchecked")
     public <T> T get(String name) {
         return (T) context.get(name);
+    }
+
+    public boolean hasKey(String name) {
+        return context.containsKey(name);
     }
 
     public Set<String> getKeys() {

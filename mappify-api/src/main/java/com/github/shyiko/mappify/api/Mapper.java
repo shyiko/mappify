@@ -286,6 +286,187 @@ public interface Mapper {
      */
     <T> T[] map(Collection sourceCollection, Class<T> targetClass, String mappingName, MappingContext mappingContext);
 
+
+    /**
+     * Map each element of source array into corresponding object of target class.
+     * Result is added to the target collection.
+     * @param sourceArray source array
+     * @param targetClass target class
+     * @param targetCollection target collection
+     * @param <S> source type
+     * @param <C> collection type
+     * @param <T> return type
+     * @return target collection
+     * @throws MappingException in case of failure during the mapping process
+     */
+    <S, C extends Collection<T>, T> C map(S[] sourceArray, Class<T> targetClass, C targetCollection);
+
+    /**
+     * Map each element of source array into corresponding object of target class.
+     * Result is added to the target collection.
+     * @param sourceArray source array
+     * @param targetClass target class
+     * @param targetCollection target collection
+     * @param mappingName mapping name
+     * @param <S> source type
+     * @param <C> collection type
+     * @param <T> return type
+     * @return target collection
+     * @throws MappingException in case of failure during the mapping process
+     */
+    <S, C extends Collection<T>, T> C map(
+            S[] sourceArray, Class<T> targetClass, C targetCollection, String mappingName);
+
+    /**
+     * Map each element of source array into corresponding object of target class.
+     * Result is added to the target collection.
+     * @param sourceArray source array
+     * @param targetClass target class
+     * @param targetCollection target collection
+     * @param mappingContext mapping context
+     * @param <S> source type
+     * @param <C> collection type
+     * @param <T> return type
+     * @return target collection
+     * @throws MappingException in case of failure during the mapping process
+     */
+    <S, C extends Collection<T>, T> C map(
+            S[] sourceArray, Class<T> targetClass, C targetCollection, MappingContext mappingContext);
+
+    /**
+     * Map each element of source array into corresponding object of target class.
+     * Result is added to the target collection.
+     * @param sourceArray source array
+     * @param targetClass target class
+     * @param targetCollection target collection
+     * @param mappingName mapping name
+     * @param mappingContext mapping context
+     * @param <S> source type
+     * @param <C> collection type
+     * @param <T> return type
+     * @return target collection
+     * @throws MappingException in case of failure during the mapping process
+     */
+    <S, C extends Collection<T>, T> C map(
+            S[] sourceArray, Class<T> targetClass, C targetCollection, String mappingName,
+            MappingContext mappingContext);
+
+    /**
+     * Map each element of source array into corresponding object of target class.
+     * Result is added to the target map (source object (key) -> target object (value)).
+     * @param sourceArray source array
+     * @param targetClass target class
+     * @param targetMap target map
+     * @param <S> source type
+     * @param <C> map type
+     * @param <T> return type
+     * @return target map
+     * @throws MappingException in case of failure during the mapping process
+     */
+    <S, C extends Map<S, T>, T> C map(
+            S[] sourceArray, Class<T> targetClass, C targetMap);
+
+    /**
+     * Map each element of source array into corresponding object of target class.
+     * Result is added to the target map (source object (key) -> target object (value)).
+     * @param sourceArray source array
+     * @param targetClass target class
+     * @param targetMap target map
+     * @param mappingName mapping name
+     * @param <S> source type
+     * @param <C> map type
+     * @param <T> return type
+     * @return target map
+     * @throws MappingException in case of failure during the mapping process
+     */
+    <S, C extends Map<S, T>, T> C map(
+            S[] sourceArray, Class<T> targetClass, C targetMap, String mappingName);
+
+    /**
+     * Map each element of source array into corresponding object of target class.
+     * Result is added to the target map (source object (key) -> target object (value)).
+     * @param sourceArray source array
+     * @param targetClass target class
+     * @param targetMap target map
+     * @param mappingContext mapping context
+     * @param <S> source type
+     * @param <C> map type
+     * @param <T> return type
+     * @return target map
+     * @throws MappingException in case of failure during the mapping process
+     */
+    <S, C extends Map<S, T>, T> C map(
+            S[] sourceArray, Class<T> targetClass, C targetMap, MappingContext mappingContext);
+
+    /**
+     * Map each element of source array into corresponding object of target class.
+     * Result is added to the target map (source object (key) -> target object (value)).
+     * @param sourceArray source array
+     * @param targetClass target class
+     * @param targetMap target map
+     * @param mappingName mapping name
+     * @param mappingContext mapping context
+     * @param <S> source type
+     * @param <C> map type
+     * @param <T> return type
+     * @return target map
+     * @throws MappingException in case of failure during the mapping process
+     */
+    <S, C extends Map<S, T>, T> C map(
+            S[] sourceArray, Class<T> targetClass, C targetMap, String mappingName, MappingContext mappingContext);
+
+    /**
+     * Map each element of source array into corresponding object of target class.
+     * Result is returned in for of an array.
+     * @param sourceArray source array
+     * @param targetClass target class
+     * @param <S> source type
+     * @param <T> return type
+     * @return array of mapped instances
+     * @throws MappingException in case of failure during the mapping process
+     */
+    <S, T> T[] map(S[] sourceArray, Class<T> targetClass);
+
+    /**
+     * Map each element of source array into corresponding object of target class.
+     * Result is returned in for of an array.
+     * @param sourceArray source array
+     * @param targetClass target class
+     * @param mappingName mapping name
+     * @param <S> source type
+     * @param <T> return type
+     * @return array of mapped instances
+     * @throws MappingException in case of failure during the mapping process
+     */
+    <S, T> T[] map(S[] sourceArray, Class<T> targetClass, String mappingName);
+
+    /**
+     * Map each element of source array into corresponding object of target class.
+     * Result is returned in for of an array.
+     * @param sourceArray source array
+     * @param targetClass target class
+     * @param mappingContext mapping context
+     * @param <S> source type
+     * @param <T> return type
+     * @return array of mapped instances
+     * @throws MappingException in case of failure during the mapping process
+     */
+    <S, T> T[] map(S[] sourceArray, Class<T> targetClass, MappingContext mappingContext);
+
+    /**
+     * Map each element of source array into corresponding object of target class.
+     * Result is returned in for of an array.
+     * @param sourceArray source array
+     * @param targetClass target class
+     * @param mappingName mapping name
+     * @param mappingContext mapping context
+     * @param <S> source type
+     * @param <T> return type
+     * @return array of mapped instances
+     * @throws MappingException in case of failure during the mapping process
+     */
+    <S, T> T[] map(S[] sourceArray, Class<T> targetClass, String mappingName, MappingContext mappingContext);
+
     /**
      * Determine whether mapper has mapping definition for source class -> target class.
      * @param sourceClass source class

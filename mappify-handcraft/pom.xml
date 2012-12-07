@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.github.shyiko.mappify</groupId>
         <artifactId>mappify</artifactId>
-        <version>1.0.1-SNAPSHOT</version>
+        <version>1.1.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>mappify-handcraft</artifactId>
@@ -19,7 +19,7 @@
         <dependency>
             <groupId>com.github.shyiko.mappify</groupId>
             <artifactId>mappify-api</artifactId>
-            <version>1.0.1-SNAPSHOT</version>
+            <version>1.1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.testng</groupId>

@@ -122,6 +122,86 @@ public abstract class AbstractMapper implements Mapper {
         return targetCollection;
     }
 
+    @Override
+    public <S, C extends Collection<T>, T> C map(S[] sourceArray, Class<T> targetClass, C targetCollection) {
+        return map(sourceArray, targetClass, targetCollection, getDefaultMappingName(), getDefaultContext());
+    }
+
+    @Override
+    public <S, C extends Collection<T>, T> C map(S[] sourceArray, Class<T> targetClass, C targetCollection,
+                                                 String mappingName) {
+        return map(sourceArray, targetClass, targetCollection, mappingName, getDefaultContext());
+    }
+
+    @Override
+    public <S, C extends Collection<T>, T> C map(S[] sourceArray, Class<T> targetClass, C targetCollection,
+                                                 MappingContext mappingContext) {
+        return map(sourceArray, targetClass, targetCollection, getDefaultMappingName(), getDefaultContext());
+    }
+
+    @Override
+    public <S, C extends Collection<T>, T> C map(S[] sourceArray, Class<T> targetClass, C targetCollection,
+                                                 String mappingName, MappingContext mappingContext) {
+        assertNotNull(sourceArray, "Source array must never be null");
+        for (Object source : sourceArray) {
+            targetCollection.add(map(source, targetClass, mappingName, mappingContext));
+        }
+        return targetCollection;
+    }
+
+    @Override
+    public <S, C extends Map<S, T>, T> C map(S[] sourceArray, Class<T> targetClass, C targetMap) {
+        return map(sourceArray, targetClass, targetMap, getDefaultMappingName(), getDefaultContext());
+    }
+
+    @Override
+    public <S, C extends Map<S, T>, T> C map(S[] sourceArray, Class<T> targetClass, C targetMap, String mappingName) {
+        return map(sourceArray, targetClass, targetMap, mappingName, getDefaultContext());
+    }
+
+    @Override
+    public <S, C extends Map<S, T>, T> C map(S[] sourceArray, Class<T> targetClass, C targetMap,
+                                             MappingContext mappingContext) {
+        return map(sourceArray, targetClass, targetMap, getDefaultMappingName(), mappingContext);
+    }
+
+    @Override
+    public <S, C extends Map<S, T>, T> C map(S[] sourceArray, Class<T> targetClass, C targetMap, String mappingName,
+                                             MappingContext mappingContext) {
+        assertNotNull(sourceArray, "Source array must never be null");
+        for (S source : sourceArray) {
+            targetMap.put(source, map(source, targetClass, mappingName, mappingContext));
+        }
+        return targetMap;
+    }
+
+    @Override
+    public <S, T> T[] map(S[] sourceArray, Class<T> targetClass) {
+        return map(sourceArray, targetClass, getDefaultMappingName(), getDefaultContext());
+    }
+
+    @Override
+    public <S, T> T[] map(S[] sourceArray, Class<T> targetClass, String mappingName) {
+        return map(sourceArray, targetClass, mappingName, getDefaultContext());
+    }
+
+    @Override
+    public <S, T> T[] map(S[] sourceArray, Class<T> targetClass, MappingContext mappingContext) {
+        return map(sourceArray, targetClass, getDefaultMappingName(), mappingContext);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <S, T> T[] map(S[] sourceArray, Class<T> targetClass, String mappingName, MappingContext mappingContext) {
+        assertNotNull(sourceArray, "Source array must never be null");
+        T[] result = (T[]) Array.newInstance(targetClass, sourceArray.length);
+        int i = 0;
+        for (Object source : sourceArray) {
+            result[i++] = map(source, targetClass, mappingName, mappingContext);
+        }
+        return result;
+    }
+
     protected void assertNotNull(Object object, String exceptionMessage) {
         if (object == null) {
             throw new MappingException(exceptionMessage);

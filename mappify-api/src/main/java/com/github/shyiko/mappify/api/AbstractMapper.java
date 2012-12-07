@@ -16,8 +16,7 @@
 package com.github.shyiko.mappify.api;
 
 import java.lang.reflect.Array;
-import java.util.Collection;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Convenient partial implementation of {@link Mapper}, which leaves only two methods to be overridden -
@@ -267,6 +266,270 @@ public abstract class AbstractMapper implements Mapper {
     @Override
     public boolean allowsToMap(Class sourceClass, Class targetClass) {
         return allowsToMap(sourceClass, targetClass, getDefaultMappingName());
+    }
+
+    @Override
+    public <T> ArrayList<T> mapToArrayList(Collection sourceCollection, Class<T> targetClass) {
+        return map(sourceCollection, targetClass, new ArrayList<T>(determineSICForArrayList(sourceCollection)));
+    }
+
+    @Override
+    public <T> ArrayList<T> mapToArrayList(Collection sourceCollection, Class<T> targetClass, String mappingName) {
+        return map(sourceCollection, targetClass, new ArrayList<T>(determineSICForArrayList(sourceCollection)),
+                mappingName);
+    }
+
+    @Override
+    public <T> ArrayList<T> mapToArrayList(Collection sourceCollection, Class<T> targetClass,
+                                           MappingContext mappingContext) {
+        return map(sourceCollection, targetClass, new ArrayList<T>(determineSICForArrayList(sourceCollection)),
+                mappingContext);
+    }
+
+    @Override
+    public <T> ArrayList<T> mapToArrayList(Collection sourceCollection, Class<T> targetClass,
+                                           String mappingName, MappingContext mappingContext) {
+        return map(sourceCollection, targetClass, new ArrayList<T>(determineSICForArrayList(sourceCollection)),
+                mappingName, mappingContext);
+    }
+
+    @Override
+    public <S, T> ArrayList<T> mapToArrayList(S[] sourceArray, Class<T> targetClass) {
+        return map(sourceArray, targetClass, new ArrayList<T>(determineSICForArrayList(sourceArray)));
+    }
+
+    @Override
+    public <S, T> ArrayList<T> mapToArrayList(S[] sourceArray, Class<T> targetClass, String mappingName) {
+        return map(sourceArray, targetClass, new ArrayList<T>(determineSICForArrayList(sourceArray)), mappingName);
+    }
+
+    @Override
+    public <S, T> ArrayList<T> mapToArrayList(S[] sourceArray, Class<T> targetClass, MappingContext mappingContext) {
+        return map(sourceArray, targetClass, new ArrayList<T>(determineSICForArrayList(sourceArray)), mappingContext);
+    }
+
+    @Override
+    public <S, T> ArrayList<T> mapToArrayList(S[] sourceArray, Class<T> targetClass, String mappingName,
+                                              MappingContext mappingContext) {
+        return map(sourceArray, targetClass, new ArrayList<T>(determineSICForArrayList(sourceArray)),
+                mappingName, mappingContext);
+    }
+
+    protected int determineSICForArrayList(Collection collection) {
+        assertNotNull(collection, "Source collection must never be null");
+        return collection.size();
+    }
+
+    protected int determineSICForArrayList(Object[] array) {
+        assertNotNull(array, "Source array must never be null");
+        return array.length;
+    }
+
+    @Override
+    public <T> HashSet<T> mapToHashSet(Collection sourceCollection, Class<T> targetClass) {
+        return map(sourceCollection, targetClass,
+                new HashSet<T>(determineSICForMap(sourceCollection)));
+    }
+
+    @Override
+    public <T> HashSet<T> mapToHashSet(Collection sourceCollection, Class<T> targetClass, String mappingName) {
+        return map(sourceCollection, targetClass,
+                new HashSet<T>(determineSICForMap(sourceCollection)), mappingName);
+    }
+
+    @Override
+    public <T> HashSet<T> mapToHashSet(Collection sourceCollection, Class<T> targetClass,
+                                       MappingContext mappingContext) {
+        return map(sourceCollection, targetClass, new HashSet<T>(determineSICForMap(sourceCollection)),
+                mappingContext);
+    }
+
+    @Override
+    public <T> HashSet<T> mapToHashSet(Collection sourceCollection, Class<T> targetClass, String mappingName,
+                                       MappingContext mappingContext) {
+        return map(sourceCollection, targetClass, new HashSet<T>(determineSICForMap(sourceCollection)), mappingName,
+                mappingContext);
+    }
+
+    @Override
+    public <S, T> HashSet<T> mapToHashSet(S[] sourceArray, Class<T> targetClass) {
+        return map(sourceArray, targetClass, new HashSet<T>(determineSICForMap(sourceArray)));
+    }
+
+    @Override
+    public <S, T> HashSet<T> mapToHashSet(S[] sourceArray, Class<T> targetClass, String mappingName) {
+        return map(sourceArray, targetClass, new HashSet<T>(determineSICForMap(sourceArray)), mappingName);
+    }
+
+    @Override
+    public <S, T> HashSet<T> mapToHashSet(S[] sourceArray, Class<T> targetClass, MappingContext mappingContext) {
+        return map(sourceArray, targetClass, new HashSet<T>(determineSICForMap(sourceArray)), mappingContext);
+    }
+
+    @Override
+    public <S, T> HashSet<T> mapToHashSet(S[] sourceArray, Class<T> targetClass, String mappingName,
+                                          MappingContext mappingContext) {
+        return map(sourceArray, targetClass, new HashSet<T>(determineSICForMap(sourceArray)), mappingName,
+                mappingContext);
+    }
+
+    @Override
+    public <T> LinkedHashSet<T> mapToLinkedHashSet(Collection sourceCollection, Class<T> targetClass) {
+        return map(sourceCollection, targetClass, new LinkedHashSet<T>(determineSICForMap(sourceCollection)));
+    }
+
+    @Override
+    public <T> LinkedHashSet<T> mapToLinkedHashSet(Collection sourceCollection, Class<T> targetClass,
+                                                   String mappingName) {
+        return map(sourceCollection, targetClass, new LinkedHashSet<T>(determineSICForMap(sourceCollection)),
+                mappingName);
+    }
+
+    @Override
+    public <T> LinkedHashSet<T> mapToLinkedHashSet(Collection sourceCollection, Class<T> targetClass, MappingContext mappingContext) {
+        return map(sourceCollection, targetClass, new LinkedHashSet<T>(determineSICForMap(sourceCollection)),
+                mappingContext);
+    }
+
+    @Override
+    public <T> LinkedHashSet<T> mapToLinkedHashSet(Collection sourceCollection, Class<T> targetClass,
+                                                   String mappingName, MappingContext mappingContext) {
+        return map(sourceCollection, targetClass, new LinkedHashSet<T>(determineSICForMap(sourceCollection)),
+                mappingName, mappingContext);
+    }
+
+    @Override
+    public <S, T> LinkedHashSet<T> mapToLinkedHashSet(S[] sourceArray, Class<T> targetClass) {
+        return map(sourceArray, targetClass, new LinkedHashSet<T>(determineSICForMap(sourceArray)));
+    }
+
+    @Override
+    public <S, T> LinkedHashSet<T> mapToLinkedHashSet(S[] sourceArray, Class<T> targetClass, String mappingName) {
+        return map(sourceArray, targetClass, new LinkedHashSet<T>(determineSICForMap(sourceArray)), mappingName);
+    }
+
+    @Override
+    public <S, T> LinkedHashSet<T> mapToLinkedHashSet(S[] sourceArray, Class<T> targetClass,
+                                                      MappingContext mappingContext) {
+        return map(sourceArray, targetClass, new LinkedHashSet<T>(determineSICForMap(sourceArray)), mappingContext);
+    }
+
+    @Override
+    public <S, T> LinkedHashSet<T> mapToLinkedHashSet(S[] sourceArray, Class<T> targetClass,
+                                                      String mappingName, MappingContext mappingContext) {
+        return map(sourceArray, targetClass, new LinkedHashSet<T>(determineSICForMap(sourceArray)), mappingName,
+                mappingContext);
+    }
+
+    @Override
+    public <S, T> HashMap<S, T> mapToHashMap(Collection<S> sourceCollection, Class<T> targetClass) {
+        return map(sourceCollection, targetClass, new HashMap<S, T>(determineSICForMap(sourceCollection)));
+    }
+
+    @Override
+    public <S, T> HashMap<S, T> mapToHashMap(Collection<S> sourceCollection, Class<T> targetClass,
+                                             String mappingName) {
+        return map(sourceCollection, targetClass, new HashMap<S, T>(determineSICForMap(sourceCollection)),
+                mappingName);
+    }
+
+    @Override
+    public <S, T> HashMap<S, T> mapToHashMap(Collection<S> sourceCollection, Class<T> targetClass,
+                                             MappingContext mappingContext) {
+        return map(sourceCollection, targetClass, new HashMap<S, T>(determineSICForMap(sourceCollection)),
+                mappingContext);
+    }
+
+    @Override
+    public <S, T> HashMap<S, T> mapToHashMap(Collection<S> sourceCollection, Class<T> targetClass,
+                                             String mappingName, MappingContext mappingContext) {
+        return map(sourceCollection, targetClass, new HashMap<S, T>(determineSICForMap(sourceCollection)),
+                mappingName, mappingContext);
+    }
+
+    @Override
+    public <S, T> HashMap<S, T> mapToHashMap(S[] sourceArray, Class<T> targetClass) {
+        return map(sourceArray, targetClass, new HashMap<S, T>(determineSICForMap(sourceArray)));
+    }
+
+    @Override
+    public <S, T> HashMap<S, T> mapToHashMap(S[] sourceArray, Class<T> targetClass, String mappingName) {
+        return map(sourceArray, targetClass, new HashMap<S, T>(determineSICForMap(sourceArray)), mappingName);
+    }
+
+    @Override
+    public <S, T> HashMap<S, T> mapToHashMap(S[] sourceArray, Class<T> targetClass, MappingContext mappingContext) {
+        return map(sourceArray, targetClass, new HashMap<S, T>(determineSICForMap(sourceArray)), mappingContext);
+    }
+
+    @Override
+    public <S, T> HashMap<S, T> mapToHashMap(S[] sourceArray, Class<T> targetClass, String mappingName,
+                                             MappingContext mappingContext) {
+        return map(sourceArray, targetClass, new HashMap<S, T>(determineSICForMap(sourceArray)),
+                mappingName, mappingContext);
+    }
+
+    @Override
+    public <S, T> LinkedHashMap<S, T> mapToLinkedHashMap(Collection<S> sourceCollection, Class<T> targetClass) {
+        return map(sourceCollection, targetClass, new LinkedHashMap<S, T>(determineSICForMap(sourceCollection)));
+    }
+
+    @Override
+    public <S, T> LinkedHashMap<S, T> mapToLinkedHashMap(Collection<S> sourceCollection, Class<T> targetClass,
+                                                         String mappingName) {
+        return map(sourceCollection, targetClass, new LinkedHashMap<S, T>(determineSICForMap(sourceCollection)),
+                mappingName);
+    }
+
+    @Override
+    public <S, T> LinkedHashMap<S, T> mapToLinkedHashMap(Collection<S> sourceCollection, Class<T> targetClass,
+                                                         MappingContext mappingContext) {
+        return map(sourceCollection, targetClass, new LinkedHashMap<S, T>(determineSICForMap(sourceCollection)),
+                mappingContext);
+    }
+
+    @Override
+    public <S, T> LinkedHashMap<S, T> mapToLinkedHashMap(Collection<S> sourceCollection, Class<T> targetClass,
+                                                         String mappingName, MappingContext mappingContext) {
+        return map(sourceCollection, targetClass, new LinkedHashMap<S, T>(determineSICForMap(sourceCollection)),
+                mappingName, mappingContext);
+    }
+
+    @Override
+    public <S, T> LinkedHashMap<S, T> mapToLinkedHashMap(S[] sourceArray, Class<T> targetClass) {
+        return map(sourceArray, targetClass, new LinkedHashMap<S, T>(determineSICForMap(sourceArray)));
+    }
+
+    @Override
+    public <S, T> LinkedHashMap<S, T> mapToLinkedHashMap(S[] sourceArray, Class<T> targetClass, String mappingName) {
+        return map(sourceArray, targetClass, new LinkedHashMap<S, T>(determineSICForMap(sourceArray)), mappingName);
+    }
+
+    @Override
+    public <S, T> LinkedHashMap<S, T> mapToLinkedHashMap(S[] sourceArray, Class<T> targetClass,
+                                                         MappingContext mappingContext) {
+        return map(sourceArray, targetClass, new LinkedHashMap<S, T>(determineSICForMap(sourceArray)), mappingContext);
+    }
+
+    @Override
+    public <S, T> LinkedHashMap<S, T> mapToLinkedHashMap(S[] sourceArray, Class<T> targetClass,
+                                                         String mappingName, MappingContext mappingContext) {
+        return map(sourceArray, targetClass, new LinkedHashMap<S, T>(determineSICForMap(sourceArray)),
+                mappingName, mappingContext);
+    }
+
+    protected int determineSICForMap(Collection collection) {
+        assertNotNull(collection, "Source collection must never be null");
+        return determineSufficientInitialCapacityForMap(collection.size());
+    }
+
+    protected int determineSICForMap(Object[] array) {
+        assertNotNull(array, "Source array must never be null");
+        return determineSufficientInitialCapacityForMap(array.length);
+    }
+
+    protected int determineSufficientInitialCapacityForMap(int size) {
+        return Math.max((int) (size / .75f) + 1, 16);
     }
 
     protected String getDefaultMappingName() {

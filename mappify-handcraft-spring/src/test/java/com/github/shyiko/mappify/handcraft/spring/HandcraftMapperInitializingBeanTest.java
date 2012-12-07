@@ -46,11 +46,25 @@ public class HandcraftMapperInitializingBeanTest extends AbstractTestNGSpringCon
         assertEquals(dto.properties.size(), 2);
     }
 
+    @Test
+    public void testNamedMapping() {
+        Entity entity = new Entity(1, Arrays.asList(new EntityProperty("p1"), new EntityProperty("p2")));
+        EntityDTO dto = mapper.map(entity, EntityDTO.class, "Named");
+        assertEquals(dto.id, 1);
+        assertEquals(dto.properties.size(), 2);
+    }
+
     @Mapping
     public void mapToDTO(Entity entity, EntityDTO entityDTO) {
         entityDTO.id = entity.id;
         entityDTO.properties = mapper.map(entity.properties, EntityPropertyDTO.class,
                 new LinkedList<EntityPropertyDTO>());
+    }
+
+    @Mapping("Named")
+    public void mapToDTONamed(Entity entity, EntityDTO entityDTO) {
+        entityDTO.id = entity.id;
+        entityDTO.properties = mapper.mapToArrayList(entity.properties, EntityPropertyDTO.class);
     }
 
     @Mapping

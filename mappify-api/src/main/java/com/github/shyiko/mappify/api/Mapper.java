@@ -15,8 +15,7 @@
  */
 package com.github.shyiko.mappify.api;
 
-import java.util.Collection;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Contract for the object mapper. Implementations are required to be thread-safe.
@@ -483,4 +482,258 @@ public interface Mapper {
      * @return true if mapper is capable of mapping source class to the target, false otherwise
      */
     boolean allowsToMap(Class sourceClass, Class targetClass, String mappingName);
+
+    /**
+     * Alias for map(sourceCollection, targetClass, new ArrayList(sourceCollection.size())).
+     * @see #map(java.util.Collection, Class, java.util.Collection)
+     */
+    <T> ArrayList<T> mapToArrayList(Collection sourceCollection, Class<T> targetClass);
+
+    /**
+     * Alias for map(sourceCollection, targetClass, new ArrayList(sourceCollection.size()), mappingName).
+     * @see #map(java.util.Collection, Class, java.util.Collection, String)
+     */
+    <T> ArrayList<T> mapToArrayList(Collection sourceCollection, Class<T> targetClass, String mappingName);
+
+    /**
+     * Alias for map(sourceCollection, targetClass, new ArrayList(sourceCollection.size()), mappingContext).
+     * @see #map(java.util.Collection, Class, java.util.Collection, MappingContext)
+     */
+    <T> ArrayList<T> mapToArrayList(Collection sourceCollection, Class<T> targetClass, MappingContext mappingContext);
+
+    /**
+     * Alias for map(sourceCollection, targetClass, new ArrayList(sourceCollection.size()), mappingName, mappingContext).
+     * @see #map(java.util.Collection, Class, java.util.Collection, String, MappingContext)
+     */
+    <T> ArrayList<T> mapToArrayList(
+            Collection sourceCollection, Class<T> targetClass, String mappingName, MappingContext mappingContext);
+
+    /**
+     * Alias for map(sourceArray, targetClass, new ArrayList(sourceArray.length)).
+     * @see #map(Object[], Class, java.util.Collection)
+     */
+    <S, T> ArrayList<T> mapToArrayList(S[] sourceArray, Class<T> targetClass);
+
+    /**
+     * Alias for map(sourceArray, targetClass, new ArrayList(sourceArray.length), mappingName).
+     * @see #map(Object[], Class, java.util.Collection, String)
+     */
+    <S, T> ArrayList<T> mapToArrayList(S[] sourceArray, Class<T> targetClass, String mappingName);
+
+    /**
+     * Alias for map(sourceArray, targetClass, new ArrayList(sourceArray.length), mappingContext).
+     * @see #map(Object[], Class, java.util.Collection, MappingContext)
+     */
+    <S, T> ArrayList<T> mapToArrayList(S[] sourceArray, Class<T> targetClass, MappingContext mappingContext);
+
+    /**
+     * Alias for map(sourceArray, targetClass, new ArrayList(sourceArray.length), mappingName, mappingContext).
+     * @see #map(Object[], Class, java.util.Collection, String, MappingContext)
+     */
+    <S, T> ArrayList<T> mapToArrayList(
+            S[] sourceArray, Class<T> targetClass, String mappingName, MappingContext mappingContext);
+
+    /**
+     * Alias for map(sourceCollection, targetClass, new HashSet(sufficient initial capacity))).
+     * @see #map(java.util.Collection, Class, java.util.Collection)
+     */
+    <T> HashSet<T> mapToHashSet(Collection sourceCollection, Class<T> targetClass);
+
+    /**
+     * Alias for map(sourceCollection, targetClass, new HashSet(sufficient initial capacity), mappingName).
+     * @see #map(java.util.Collection, Class, java.util.Collection, String)
+     */
+    <T> HashSet<T> mapToHashSet(Collection sourceCollection, Class<T> targetClass, String mappingName);
+
+    /**
+     * Alias for map(sourceCollection, targetClass, new HashSet(sufficient initial capacity), mappingContext).
+     * @see #map(java.util.Collection, Class, java.util.Collection, MappingContext)
+     */
+    <T> HashSet<T> mapToHashSet(Collection sourceCollection, Class<T> targetClass, MappingContext mappingContext);
+
+    /**
+     * Alias for map(sourceCollection, targetClass, new HashSet(sufficient initial capacity), mappingName, mappingContext).
+     * @see #map(java.util.Collection, Class, java.util.Collection, String, MappingContext)
+     */
+    <T> HashSet<T> mapToHashSet(
+            Collection sourceCollection, Class<T> targetClass, String mappingName, MappingContext mappingContext);
+
+    /**
+     * Alias for map(sourceArray, targetClass, new HashSet(sufficient initial capacity)).
+     * @see #map(Object[], Class, java.util.Collection)
+     */
+    <S, T> HashSet<T> mapToHashSet(S[] sourceArray, Class<T> targetClass);
+
+    /**
+     * Alias for map(sourceArray, targetClass, new HashSet(sufficient initial capacity), mappingName).
+     * @see #map(Object[], Class, java.util.Collection, String)
+     */
+    <S, T> HashSet<T> mapToHashSet(S[] sourceArray, Class<T> targetClass, String mappingName);
+
+    /**
+     * Alias for map(sourceArray, targetClass, new HashSet(sufficient initial capacity), mappingContext).
+     * @see #map(Object[], Class, java.util.Collection, MappingContext)
+     */
+    <S, T> HashSet<T> mapToHashSet(S[] sourceArray, Class<T> targetClass, MappingContext mappingContext);
+
+    /**
+     * Alias for map(sourceArray, targetClass, new HashSet(sufficient initial capacity), mappingName, mappingContext).
+     * @see #map(Object[], Class, java.util.Collection, String, MappingContext)
+     */
+    <S, T> HashSet<T> mapToHashSet(
+            S[] sourceArray, Class<T> targetClass, String mappingName, MappingContext mappingContext);
+
+    /**
+     * Alias for map(sourceCollection, targetClass, new LinkedHashSet(sufficient initial capacity))).
+     * @see #map(java.util.Collection, Class, java.util.Collection)
+     */
+    <T> LinkedHashSet<T> mapToLinkedHashSet(Collection sourceCollection, Class<T> targetClass);
+
+    /**
+     * Alias for map(sourceCollection, targetClass, new LinkedHashSet(sufficient initial capacity), mappingName).
+     * @see #map(java.util.Collection, Class, java.util.Collection, String)
+     */
+    <T> LinkedHashSet<T> mapToLinkedHashSet(Collection sourceCollection, Class<T> targetClass, String mappingName);
+
+    /**
+     * Alias for map(sourceCollection, targetClass, new LinkedHashSet(sufficient initial capacity), mappingContext).
+     * @see #map(java.util.Collection, Class, java.util.Collection, MappingContext)
+     */
+    <T> LinkedHashSet<T> mapToLinkedHashSet(
+            Collection sourceCollection, Class<T> targetClass, MappingContext mappingContext);
+
+    /**
+     * Alias for map(sourceCollection, targetClass, new LinkedHashSet(sufficient initial capacity), mappingName, mappingContext).
+     * @see #map(java.util.Collection, Class, java.util.Collection, String, MappingContext)
+     */
+    <T> LinkedHashSet<T> mapToLinkedHashSet(
+            Collection sourceCollection, Class<T> targetClass, String mappingName, MappingContext mappingContext);
+
+    /**
+     * Alias for map(sourceArray, targetClass, new LinkedHashSet(sufficient initial capacity)).
+     * @see #map(Object[], Class, java.util.Collection)
+     */
+    <S, T> LinkedHashSet<T> mapToLinkedHashSet(S[] sourceArray, Class<T> targetClass);
+
+    /**
+     * Alias for map(sourceArray, targetClass, new LinkedHashSet(sufficient initial capacity), mappingName).
+     * @see #map(Object[], Class, java.util.Collection, String)
+     */
+    <S, T> LinkedHashSet<T> mapToLinkedHashSet(S[] sourceArray, Class<T> targetClass, String mappingName);
+
+    /**
+     * Alias for map(sourceArray, targetClass, new LinkedHashSet(sufficient initial capacity), mappingContext).
+     * @see #map(Object[], Class, java.util.Collection, MappingContext)
+     */
+    <S, T> LinkedHashSet<T> mapToLinkedHashSet(S[] sourceArray, Class<T> targetClass, MappingContext mappingContext);
+
+    /**
+     * Alias for map(sourceArray, targetClass, new LinkedHashSet(sufficient initial capacity), mappingName, mappingContext).
+     * @see #map(Object[], Class, java.util.Collection, String, MappingContext)
+     */
+    <S, T> LinkedHashSet<T> mapToLinkedHashSet(
+            S[] sourceArray, Class<T> targetClass, String mappingName, MappingContext mappingContext);
+
+    /**
+     * Alias for map(sourceCollection, targetClass, new HashMap(sufficient initial capacity))).
+     * @see #map(java.util.Collection, Class, java.util.Map)
+     */
+    <S, T> HashMap<S, T> mapToHashMap(Collection<S> sourceCollection, Class<T> targetClass);
+
+    /**
+     * Alias for map(sourceCollection, targetClass, new HashMap(sufficient initial capacity), mappingName).
+     * @see #map(java.util.Collection, Class, java.util.Map, String)
+     */
+    <S, T> HashMap<S, T> mapToHashMap(Collection<S> sourceCollection, Class<T> targetClass, String mappingName);
+
+    /**
+     * Alias for map(sourceCollection, targetClass, new HashMap(sufficient initial capacity), mappingContext).
+     * @see #map(java.util.Collection, Class, java.util.Map, MappingContext)
+     */
+    <S, T> HashMap<S, T> mapToHashMap(
+            Collection<S> sourceCollection, Class<T> targetClass, MappingContext mappingContext);
+
+    /**
+     * Alias for map(sourceCollection, targetClass, new HashMap(sufficient initial capacity), mappingName, mappingContext).
+     * @see #map(java.util.Collection, Class, java.util.Map, String, MappingContext)
+     */
+    <S, T> HashMap<S, T> mapToHashMap(
+            Collection<S> sourceCollection, Class<T> targetClass, String mappingName, MappingContext mappingContext);
+
+    /**
+     * Alias for map(sourceArray, targetClass, new HashMap(sufficient initial capacity)).
+     * @see #map(Object[], Class, java.util.Map)
+     */
+    <S, T> HashMap<S, T> mapToHashMap(S[] sourceArray, Class<T> targetClass);
+
+    /**
+     * Alias for map(sourceArray, targetClass, new HashMap(sufficient initial capacity), mappingName).
+     * @see #map(Object[], Class, java.util.Map, String)
+     */
+    <S, T> HashMap<S, T> mapToHashMap(S[] sourceArray, Class<T> targetClass, String mappingName);
+
+    /**
+     * Alias for map(sourceArray, targetClass, new HashMap(sufficient initial capacity), mappingContext).
+     * @see #map(Object[], Class, java.util.Map, MappingContext)
+     */
+    <S, T> HashMap<S, T> mapToHashMap(S[] sourceArray, Class<T> targetClass, MappingContext mappingContext);
+
+    /**
+     * Alias for map(sourceArray, targetClass, new HashMap(sufficient initial capacity), mappingName, mappingContext).
+     * @see #map(Object[], Class, java.util.Map, String, MappingContext)
+     */
+    <S, T> HashMap<S, T> mapToHashMap(
+            S[] sourceArray, Class<T> targetClass, String mappingName, MappingContext mappingContext);
+
+    /**
+     * Alias for map(sourceCollection, targetClass, new LinkedHashMap(sufficient initial capacity))).
+     * @see #map(java.util.Collection, Class, java.util.Map)
+     */
+    <S, T> LinkedHashMap<S, T> mapToLinkedHashMap(Collection<S> sourceCollection, Class<T> targetClass);
+
+    /**
+     * Alias for map(sourceCollection, targetClass, new LinkedHashMap(sufficient initial capacity), mappingName).
+     * @see #map(java.util.Collection, Class, java.util.Map, String)
+     */
+    <S, T> LinkedHashMap<S, T> mapToLinkedHashMap(
+            Collection<S> sourceCollection, Class<T> targetClass, String mappingName);
+
+    /**
+     * Alias for map(sourceCollection, targetClass, new LinkedHashMap(sufficient initial capacity), mappingContext).
+     * @see #map(java.util.Collection, Class, java.util.Map, MappingContext)
+     */
+    <S, T> LinkedHashMap<S, T> mapToLinkedHashMap(
+            Collection<S> sourceCollection, Class<T> targetClass, MappingContext mappingContext);
+
+    /**
+     * Alias for map(sourceCollection, targetClass, new LinkedHashMap(sufficient initial capacity), mappingName, mappingContext).
+     * @see #map(java.util.Collection, Class, java.util.Map, String, MappingContext)
+     */
+    <S, T> LinkedHashMap<S, T> mapToLinkedHashMap(
+            Collection<S> sourceCollection, Class<T> targetClass, String mappingName, MappingContext mappingContext);
+
+    /**
+     * Alias for map(sourceArray, targetClass, new LinkedHashMap(sufficient initial capacity)).
+     * @see #map(Object[], Class, java.util.Map)
+     */
+    <S, T> LinkedHashMap<S, T> mapToLinkedHashMap(S[] sourceArray, Class<T> targetClass);
+
+    /**
+     * Alias for map(sourceArray, targetClass, new LinkedHashMap(sufficient initial capacity), mappingName).
+     * @see #map(Object[], Class, java.util.Map, String)
+     */
+    <S, T> LinkedHashMap<S, T> mapToLinkedHashMap(S[] sourceArray, Class<T> targetClass, String mappingName);
+
+    /**
+     * Alias for map(sourceArray, targetClass, new LinkedHashMap(sufficient initial capacity), mappingContext).
+     * @see #map(Object[], Class, java.util.Map, MappingContext)
+     */
+    <S, T> LinkedHashMap<S, T> mapToLinkedHashMap(S[] sourceArray, Class<T> targetClass, MappingContext mappingContext);
+
+    /**
+     * Alias for map(sourceArray, targetClass, new LinkedHashMap(sufficient initial capacity), mappingName, mappingContext).
+     * @see #map(Object[], Class, java.util.Map, String, MappingContext)
+     */
+    <S, T> LinkedHashMap<S, T> mapToLinkedHashMap(
+            S[] sourceArray, Class<T> targetClass, String mappingName, MappingContext mappingContext);
 }

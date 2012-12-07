@@ -34,7 +34,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class HandcraftMapper extends AbstractMapper {
 
     protected Map<MappingIdentifier, MappingDelegate> config = new ConcurrentHashMap<MappingIdentifier, MappingDelegate>();
-    private ProxyNarrowingStrategy proxyNarrowingStrategy = new HibernateProxyNarrowingStrategy();
+    protected volatile ProxyNarrowingStrategy proxyNarrowingStrategy = new HibernateProxyNarrowingStrategy();
 
     public ProxyNarrowingStrategy getProxyNarrowingStrategy() {
         return proxyNarrowingStrategy;

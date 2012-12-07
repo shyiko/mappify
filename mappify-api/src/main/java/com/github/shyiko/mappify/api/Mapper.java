@@ -19,7 +19,7 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * Contract for the object mapper.
+ * Contract for the object mapper. Implementations are required to be thread-safe.
  *
  * @author <a href="mailto:stanley.shyiko@gmail.com">Stanley Shyiko</a>
  */

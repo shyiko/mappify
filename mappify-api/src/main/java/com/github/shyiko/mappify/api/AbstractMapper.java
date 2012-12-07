@@ -27,7 +27,7 @@ import java.util.Map;
  */
 public abstract class AbstractMapper implements Mapper {
 
-    private boolean enforceMappingContext = true;
+    protected volatile boolean enforceMappingContext = true;
 
     /**
      * @return true if mapping context must be created at the beginning of the map invocation

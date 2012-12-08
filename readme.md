@@ -36,7 +36,7 @@ mapper.register(new MappingProvider()); // call this method for each mapping pro
 ```java
 Target mappedTarget = mapper.map(new Source(1), Target.class);
 Set<Target> mappedTargets =
-    mapper.map(Array.asList(new Source(2), new Source(3)), Target.class, new HashSet<Target>());
+    mapper.mapToHashSet(Array.asList(new Source(2), new Source(3)), Target.class);
 ```
 
 ### Integration with Spring

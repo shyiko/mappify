@@ -11,7 +11,7 @@ Dead-simple object mapping in Java.
 <dependency>
     <groupId>com.github.shyiko.mappify</groupId>
     <artifactId>mappify-handcraft</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
 </dependency>
 ```
 
@@ -46,7 +46,7 @@ Set<Target> mappedTargets =
 <dependency>
     <groupId>com.github.shyiko.mappify</groupId>
     <artifactId>mappify-handcraft-spring</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
 </dependency>
 ```
 

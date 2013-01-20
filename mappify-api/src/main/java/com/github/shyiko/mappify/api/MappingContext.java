@@ -71,8 +71,17 @@ public class MappingContext {
         return (T) context.get(name);
     }
 
+    public <T> T get(String name, T defaultValue) {
+        T result = get(name);
+        return result == null ? defaultValue : result;
+    }
+
     public boolean hasKey(String name) {
         return context.containsKey(name);
+    }
+
+    public boolean isEmpty(String name) {
+        return context.isEmpty();
     }
 
     public Set<String> getKeys() {
@@ -84,8 +93,18 @@ public class MappingContext {
         return this;
     }
 
+    public MappingContext putAll(Map<String, Object> pairs) {
+        context.putAll(pairs);
+        return this;
+    }
+
     public MappingContext remove(String key) {
         context.remove(key);
+        return this;
+    }
+
+    public MappingContext clear() {
+        context.clear();
         return this;
     }
 }

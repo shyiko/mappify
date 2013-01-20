@@ -6,7 +6,7 @@ Dead-simple object mapping in Java.
 
 ### Standalone usage
 
-0. Add Maven dependency
+0. Add Maven dependency (or download and include jars from [here](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.github.shyiko.mappify%22%20AND%20v%3A%221.1.0%22))
 ```xml
 <dependency>
     <groupId>com.github.shyiko.mappify</groupId>

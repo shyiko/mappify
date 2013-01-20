@@ -80,7 +80,7 @@ public class MappingContext {
         return context.containsKey(name);
     }
 
-    public boolean isEmpty(String name) {
+    public boolean isEmpty() {
         return context.isEmpty();
     }
 

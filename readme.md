@@ -93,6 +93,17 @@ Set<Target> mappedTargets =
     Mapper mapper = mock(AbstractMapper.class, Mockito.CALLS_REAL_METHODS);
     do...(...).when(mapper).map(any(), any(), anyString(), any(MappingContext.class));
 
+### Frequently Asked Question
+
+* Why does Mapper have mapToArrayList but no mapToLinkedList method?
+
+    All mapTo... aliases were introduced as optimizations to the mapping process. So, instead of
+`mapper.map(collection, Target.class, new ArrayList<Target>(collection.size()))`
+one could simply use
+`mapper.mapToArrayList(collection, Target.class)`. For some data types, like LinkedList, there is nothing that
+can be done to improve the performance. As a result, simple
+`mapper.map(collection, Target.class, new LinkedList<Target>())` will do just fine.
+
 ## License
 
 [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0)

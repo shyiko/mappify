@@ -19,6 +19,7 @@ import com.github.shyiko.mappify.api.AbstractMapper;
 import com.github.shyiko.mappify.api.MappingContext;
 import com.github.shyiko.mappify.api.MappingException;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -88,7 +89,11 @@ public class HandcraftMapper extends AbstractMapper {
                     new Object[]{source, target, mappingContext} : new Object[]{source, target});
             return target;
         } catch (Exception e) {
-            throw new MappingException("Unable to map " + key.sourceClass + " to " + key.targetClass, e);
+            Throwable throwable = e;
+            if (e instanceof InvocationTargetException) {
+                throwable = e.getCause();
+            }
+            throw new MappingException("Unable to map " + key.sourceClass + " to " + key.targetClass, throwable);
         }
     }
 

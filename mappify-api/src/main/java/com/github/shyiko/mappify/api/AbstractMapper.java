@@ -88,7 +88,7 @@ public abstract class AbstractMapper implements Mapper {
         try {
             result = targetClass.newInstance();
         } catch (Exception e) {
-            throw new MappingException("Class" + targetClass + " has no default constructor", e);
+            throw new MappingException("Unable to create instance of " + targetClass, e);
         }
         return result;
     }

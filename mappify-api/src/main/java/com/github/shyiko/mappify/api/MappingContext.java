@@ -107,4 +107,9 @@ public class MappingContext {
         context.clear();
         return this;
     }
+
+    @Override
+    public String toString() {
+        return context.toString();
+    }
 }

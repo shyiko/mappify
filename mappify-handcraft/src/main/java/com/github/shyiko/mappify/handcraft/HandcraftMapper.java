@@ -71,8 +71,7 @@ public class HandcraftMapper extends AbstractMapper {
     protected <T> T map(MappingIdentifier key, Object source, T target, MappingContext mappingContext) {
         MappingDelegate mapping = findMappingDelegate(key);
         if (mapping == null) {
-            throw new MappingDefinitionNotFoundException("Mapping from " + key.sourceClass + " to " +
-                    key.targetClass + " has not been defined");
+            throw new MappingDefinitionNotFoundException("Stumbled upon undefined mapping \'" + key + "\'");
         }
         try {
             if (mapping.returnsTarget) {
@@ -93,7 +92,7 @@ public class HandcraftMapper extends AbstractMapper {
             if (e instanceof InvocationTargetException) {
                 throwable = e.getCause();
             }
-            throw new MappingException("Unable to map " + key.sourceClass + " to " + key.targetClass, throwable);
+            throw new MappingException("Unable to perform \'" + key + "\' mapping", throwable);
         }
     }
 
@@ -205,7 +204,7 @@ public class HandcraftMapper extends AbstractMapper {
         @Override
         public String toString() {
             StringBuilder sb = new StringBuilder();
-            sb.append(sourceClass).append("->").append(targetClass);
+            sb.append(sourceClass.getName()).append(" -> ").append(targetClass.getName());
             if (!"".equals(mappingName)) {
                 sb.append(" ('").append(mappingName).append("')");
             }

@@ -1,4 +1,4 @@
-# mappify <a href="http://travis-ci.org/shyiko/mappify"><img src="https://secure.travis-ci.org/shyiko/mappify.png" alt="Build Status" style="max-width:100%;"></a>
+# mappify [![Build Status](https://travis-ci.org/shyiko/mappify.png?branch=master)](https://travis-ci.org/shyiko/mappify)
 
 Dead-simple object mapping in Java.
 

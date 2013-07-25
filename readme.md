@@ -14,15 +14,16 @@ Dead-simple object mapping in Java.
     <version>1.1.0</version>
 </dependency>
 ```
+> The latest development version always available through [Sonatype Snapshots repository](https://oss.sonatype.org/content/repositories/snapshots).
 
 1. Define mapping provider(s)
 ```java
-    class MappingProvider {
-        @Mapping
-        public void mapFromSourceToTarget(Source source, Target target) {
-            target.name = "Target #" + source.id;
-        }
+class MappingProvider {
+    @Mapping
+    public void mapFromSourceToTarget(Source source, Target target) {
+        target.name = "Target #" + source.id;
     }
+}
 ```
 > NOTE: Each mapping provider can define arbitrary number of @Mapping-annotated methods.
 
@@ -57,21 +58,21 @@ Set<Target> mappedTargets =
 
 2. Define mapping provider(s)
 ```java
-    @MappingProvider
-    public class EntityMappingProvider {
+@MappingProvider
+public class EntityMappingProvider {
 
-        @Mapping
-        public void mapToDTO(Entity entity, EntityDTO dto) {
-            ...
-        }
-
-        @Mapping
-        public void mapFromDTO(EntityDTO entityDTO, Entity entity, MappingContext context) {
-            ...
-        }
-
+    @Mapping
+    public void mapToDTO(Entity entity, EntityDTO dto) {
         ...
     }
+
+    @Mapping
+    public void mapFromDTO(EntityDTO entityDTO, Entity entity, MappingContext context) {
+        ...
+    }
+
+    ...
+}
 ```
 > NOTE: @MappingProvider extends @Controller. As a result, mapping providers are discoverable with Spring's
 `<context:component-scan .../>`. If you don't use it, just make sure mapping providers are wired into the context
@@ -79,19 +80,21 @@ Set<Target> mappedTargets =
 
 3. Call the Mapper
 ```java
-    @Autowired
-    private Mapper mapper;
+@Autowired
+private Mapper mapper;
 
-    ...
-    Entity entity = ...;
-    EntityDTO dto = mapper.map(entity, EntityDTO.class);
-    ...
+...
+Entity entity = ...;
+EntityDTO dto = mapper.map(entity, EntityDTO.class);
+...
 ```
 
 ### Testing with Mockito
 
-    Mapper mapper = mock(AbstractMapper.class, Mockito.CALLS_REAL_METHODS);
-    do...(...).when(mapper).map(any(), any(), anyString(), any(MappingContext.class));
+```java
+Mapper mapper = mock(AbstractMapper.class, Mockito.CALLS_REAL_METHODS);
+do...(...).when(mapper).map(any(), any(), anyString(), any(MappingContext.class));
+```
 
 ### Frequently Asked Question
 

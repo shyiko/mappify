@@ -82,7 +82,6 @@ public class EntityMappingProvider {
 ```java
 @Autowired
 private Mapper mapper;
-
 ...
 Entity entity = ...;
 EntityDTO dto = mapper.map(entity, EntityDTO.class);

@@ -34,25 +34,28 @@ public class MappingContext {
     }
 
     /**
-     * @param context map of key-value pairs, where key denotes the name of the value object
+     * @param context mapping context to copy mappings from
      */
-    public MappingContext(Map<String, Object> context) {
-        if (context == null) {
-            throw new IllegalArgumentException("Context cannot be NULL");
-        }
-        this.context = context;
-    }
-
     public MappingContext(MappingContext context) {
         this.context.putAll(context.context);
     }
 
     /**
+     * @param mappings mappings
+     */
+    public MappingContext(Map<String, Object> mappings) {
+        if (mappings == null) {
+            throw new IllegalArgumentException("Context cannot be NULL");
+        }
+        this.context = mappings;
+    }
+
+    /**
      * Same as
      * <pre>
-     * Map&lt;String, Object&gt; properties = new HashMap&lt;String, Object&gt;();
-     * properties.put(key, value);
-     * ... = new MappingContext(properties)
+     * Map&lt;String, Object&gt; mappings = new HashMap&lt;String, Object&gt;();
+     * mappings.put(key, value);
+     * ... = new MappingContext(mappings)
      * </pre>
      * @param key key
      * @param value any object that needs to be available during the mapping process
@@ -62,47 +65,84 @@ public class MappingContext {
     }
 
     /**
-     * @param name name of the object
+     * @param key key
      * @param <T> return type
      * @return object by the given key. nullable
      */
     @SuppressWarnings("unchecked")
-    public <T> T get(String name) {
-        return (T) context.get(name);
+    public <T> T get(String key) {
+        return (T) context.get(key);
     }
 
-    public <T> T get(String name, T defaultValue) {
-        T result = get(name);
+    /**
+     * @param key key
+     * @param defaultValue default value
+     * @param <T> return type
+     * @return defaultValue if there is no mapping for the given key (or mapping value is null), otherwise -
+     * associated value
+     */
+    public <T> T get(String key, T defaultValue) {
+        T result = get(key);
         return result == null ? defaultValue : result;
     }
 
-    public boolean hasKey(String name) {
-        return context.containsKey(name);
+    /**
+     * @param key key
+     * @return true if this context contains a mapping for the given key
+     */
+    public boolean hasKey(String key) {
+        return context.containsKey(key);
     }
 
+    /**
+     * @return true if there are no mappings defined in this context, false otherwise
+     */
     public boolean isEmpty() {
         return context.isEmpty();
     }
 
+    /**
+     * @return a {@link Set} view of the keys defined in this context
+     */
     public Set<String> getKeys() {
         return context.keySet();
     }
 
+    /**
+     * Associate value with the given key in this context (overriding if necessary).
+     * @param key key
+     * @param value value. nullable
+     * @return this reference
+     */
     public MappingContext put(String key, Object value) {
         context.put(key, value);
         return this;
     }
 
-    public MappingContext putAll(Map<String, Object> pairs) {
-        context.putAll(pairs);
+    /**
+     * Copy all of the mappings from the given map to this context (overriding if necessary).
+     * @param map map of key-value pairs
+     * @return this reference
+     */
+    public MappingContext putAll(Map<String, Object> map) {
+        context.putAll(map);
         return this;
     }
 
+    /**
+     * Remove the mapping for a key.
+     * @param key key
+     * @return this reference
+     */
     public MappingContext remove(String key) {
         context.remove(key);
         return this;
     }
 
+    /**
+     * Remove all the mappings.
+     * @return this reference
+     */
     public MappingContext clear() {
         context.clear();
         return this;

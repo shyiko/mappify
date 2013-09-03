@@ -47,7 +47,7 @@ public class MappingContext {
         if (mappings == null) {
             throw new IllegalArgumentException("Context cannot be NULL");
         }
-        this.context = mappings;
+        this.context.putAll(mappings);
     }
 
     /**

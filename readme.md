@@ -6,12 +6,12 @@ Dead-simple object mapping in Java.
 
 ### Standalone usage
 
-0. Add Maven dependency (or download and include jars from [here](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.github.shyiko.mappify%22%20AND%20v%3A%221.3.0%22))
+0. Add Maven dependency (or download and include jars from [here](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.github.shyiko.mappify%22%20AND%20v%3A%221.3.1%22))
 ```xml
 <dependency>
     <groupId>com.github.shyiko.mappify</groupId>
     <artifactId>mappify-handcraft</artifactId>
-    <version>1.3.0</version>
+    <version>1.3.1</version>
 </dependency>
 ```
 > The latest development version always available through [Sonatype Snapshots repository](https://oss.sonatype.org/content/repositories/snapshots).
@@ -47,7 +47,7 @@ Set<Target> mappedTargets =
 <dependency>
     <groupId>com.github.shyiko.mappify</groupId>
     <artifactId>mappify-handcraft-spring</artifactId>
-    <version>1.3.0</version>
+    <version>1.3.1</version>
 </dependency>
 ```
 

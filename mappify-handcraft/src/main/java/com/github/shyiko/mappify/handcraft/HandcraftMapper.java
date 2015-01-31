@@ -57,13 +57,30 @@ public class HandcraftMapper extends AbstractMapper {
         assertNotNull(targetClass, "Target class cannot be null");
         assertNotNull(mappingName, "Mapping name cannot be null");
         if (!sourceCollection.isEmpty()) {
-            Iterator sourceCollectionIterator = sourceCollection.iterator();
-            Object source = sourceCollectionIterator.next();
-            Mapping mapping = resolveMapping(source, mappingName, mappingContext, targetClass);
-            targetCollection.add(map(mapping, source, targetClass, mappingName, mappingContext));
-            while (sourceCollectionIterator.hasNext()) {
-                targetCollection.add(map(mapping, sourceCollectionIterator.next(), targetClass, mappingName,
-                        mappingContext));
+            if (mappingContext != null) {
+                mappingContext.setSource(sourceCollection);
+            }
+            try {
+                Iterator sourceCollectionIterator = sourceCollection.iterator();
+                Object source = sourceCollectionIterator.next();
+                Mapping mapping = resolveMapping(source, targetClass, mappingName, mappingContext);
+                int i = 0;
+                if (mappingContext != null) {
+                    mappingContext.setSourceIndex(i++);
+                }
+                targetCollection.add(map(mapping, source, targetClass, mappingName, mappingContext));
+                while (sourceCollectionIterator.hasNext()) {
+                    source = sourceCollectionIterator.next();
+                    if (mappingContext != null) {
+                        mappingContext.setSourceIndex(i++);
+                    }
+                    targetCollection.add(map(mapping, source, targetClass, mappingName, mappingContext));
+                }
+            } finally {
+                if (mappingContext != null) {
+                    mappingContext.setSource(null);
+                    mappingContext.setSourceIndex(-1);
+                }
             }
         }
         return targetCollection;
@@ -75,10 +92,25 @@ public class HandcraftMapper extends AbstractMapper {
         assertNotNull(sourceArray, "Source array must never be null");
         assertNotNull(targetClass, "Target class cannot be null");
         assertNotNull(mappingName, "Mapping name cannot be null");
-        if (sourceArray.length != 0) {
-            Mapping mapping = resolveMapping(sourceArray[0], mappingName, mappingContext, targetClass);
-            for (Object source : sourceArray) {
-                targetCollection.add(map(mapping, source, targetClass, mappingName, mappingContext));
+        int sourceArrayLength = sourceArray.length;
+        if (sourceArrayLength != 0) {
+            if (mappingContext != null) {
+                mappingContext.setSource(new ArrayIterable<S>(sourceArray));
+            }
+            try {
+                Mapping mapping = resolveMapping(sourceArray[0], targetClass, mappingName, mappingContext);
+                for (int i = 0; i < sourceArrayLength; i++) {
+                    S source = sourceArray[i];
+                    if (mappingContext != null) {
+                        mappingContext.setSourceIndex(i);
+                    }
+                    targetCollection.add(map(mapping, source, targetClass, mappingName, mappingContext));
+                }
+            } finally {
+                if (mappingContext != null) {
+                    mappingContext.setSource(null);
+                    mappingContext.setSourceIndex(-1);
+                }
             }
         }
         return targetCollection;
@@ -90,10 +122,25 @@ public class HandcraftMapper extends AbstractMapper {
         assertNotNull(sourceArray, "Source array must never be null");
         assertNotNull(targetClass, "Target class cannot be null");
         assertNotNull(mappingName, "Mapping name cannot be null");
-        if (sourceArray.length != 0) {
-            Mapping mapping = resolveMapping(sourceArray[0], mappingName, mappingContext, targetClass);
-            for (S source : sourceArray) {
-                targetMap.put(source, map(mapping, source, targetClass, mappingName, mappingContext));
+        int sourceArrayLength = sourceArray.length;
+        if (sourceArrayLength != 0) {
+            if (mappingContext != null) {
+                mappingContext.setSource(new ArrayIterable<S>(sourceArray));
+            }
+            try {
+                Mapping mapping = resolveMapping(sourceArray[0], targetClass, mappingName, mappingContext);
+                for (int i = 0; i < sourceArrayLength; i++) {
+                    S source = sourceArray[i];
+                    if (mappingContext != null) {
+                        mappingContext.setSourceIndex(i);
+                    }
+                    targetMap.put(source, map(mapping, source, targetClass, mappingName, mappingContext));
+                }
+            } finally {
+                if (mappingContext != null) {
+                    mappingContext.setSource(null);
+                    mappingContext.setSourceIndex(-1);
+                }
             }
         }
         return targetMap;
@@ -108,9 +155,23 @@ public class HandcraftMapper extends AbstractMapper {
         int sourceArrayLength = sourceArray.length;
         T[] result = (T[]) Array.newInstance(targetClass, sourceArrayLength);
         if (sourceArrayLength != 0) {
-            Mapping mapping = resolveMapping(sourceArray[0], mappingName, mappingContext, targetClass);
-            for (int i = 0; i < sourceArrayLength; i++) {
-                result[i] = map(mapping, sourceArray[i], targetClass, mappingName, mappingContext);
+            if (mappingContext != null) {
+                mappingContext.setSource(new ArrayIterable<S>(sourceArray));
+            }
+            try {
+                Mapping mapping = resolveMapping(sourceArray[0], targetClass, mappingName, mappingContext);
+                for (int i = 0; i < sourceArrayLength; i++) {
+                    S source = sourceArray[i];
+                    if (mappingContext != null) {
+                        mappingContext.setSourceIndex(i);
+                    }
+                    result[i] = map(mapping, source, targetClass, mappingName, mappingContext);
+                }
+            } finally {
+                if (mappingContext != null) {
+                    mappingContext.setSource(null);
+                    mappingContext.setSourceIndex(-1);
+                }
             }
         }
         return result;
@@ -124,13 +185,30 @@ public class HandcraftMapper extends AbstractMapper {
         assertNotNull(targetClass, "Target class cannot be null");
         assertNotNull(mappingName, "Mapping name cannot be null");
         if (!sourceCollection.isEmpty()) {
-            Iterator<S> sourceCollectionIterator = sourceCollection.iterator();
-            S source = sourceCollectionIterator.next();
-            Mapping mapping = resolveMapping(source, mappingName, mappingContext, targetClass);
-            targetMap.put(source, map(mapping, source, targetClass, mappingName, mappingContext));
-            while (sourceCollectionIterator.hasNext()) {
-                source = sourceCollectionIterator.next();
+            if (mappingContext != null) {
+                mappingContext.setSource(sourceCollection);
+            }
+            try {
+                Iterator<S> sourceCollectionIterator = sourceCollection.iterator();
+                S source = sourceCollectionIterator.next();
+                Mapping mapping = resolveMapping(source, targetClass, mappingName, mappingContext);
+                int i = 0;
+                if (mappingContext != null) {
+                    mappingContext.setSourceIndex(i++);
+                }
                 targetMap.put(source, map(mapping, source, targetClass, mappingName, mappingContext));
+                while (sourceCollectionIterator.hasNext()) {
+                    source = sourceCollectionIterator.next();
+                    if (mappingContext != null) {
+                        mappingContext.setSourceIndex(i++);
+                    }
+                    targetMap.put(source, map(mapping, source, targetClass, mappingName, mappingContext));
+                }
+            } finally {
+                if (mappingContext != null) {
+                    mappingContext.setSource(null);
+                    mappingContext.setSourceIndex(-1);
+                }
             }
         }
         return targetMap;
@@ -145,21 +223,38 @@ public class HandcraftMapper extends AbstractMapper {
         assertNotNull(mappingName, "Mapping name cannot be null");
         T[] result = (T[]) Array.newInstance(targetClass, sourceCollection.size());
         if (!sourceCollection.isEmpty()) {
-            Iterator sourceCollectionIterator = sourceCollection.iterator();
-            Object source = sourceCollectionIterator.next();
-            Mapping mapping = resolveMapping(source, mappingName, mappingContext, targetClass);
-            result[0] = map(mapping, source, targetClass, mappingName, mappingContext);
-            int i = 1;
-            while (sourceCollectionIterator.hasNext()) {
-                result[i++] = map(mapping, sourceCollectionIterator.next(), targetClass, mappingName, mappingContext);
+            if (mappingContext != null) {
+                mappingContext.setSource(sourceCollection);
+            }
+            try {
+                Iterator sourceCollectionIterator = sourceCollection.iterator();
+                Object source = sourceCollectionIterator.next();
+                Mapping mapping = resolveMapping(source, targetClass, mappingName, mappingContext);
+                int i = 0;
+                if (mappingContext != null) {
+                    mappingContext.setSourceIndex(i);
+                }
+                result[i++] = map(mapping, source, targetClass, mappingName, mappingContext);
+                while (sourceCollectionIterator.hasNext()) {
+                    source = sourceCollectionIterator.next();
+                    if (mappingContext != null) {
+                        mappingContext.setSourceIndex(i);
+                    }
+                    result[i++] = map(mapping, source, targetClass, mappingName, mappingContext);
+                }
+            } finally {
+                if (mappingContext != null) {
+                    mappingContext.setSource(null);
+                    mappingContext.setSourceIndex(-1);
+                }
             }
         }
         return result;
     }
 
-    protected <S, T> Mapping resolveMapping(S source, String mappingName, MappingContext mappingContext,
-                                          Class<T> targetClass) {
-        if (mappingContext.hasKey(HINT_REUSE_MAPPING)) {
+    protected <S, T> Mapping resolveMapping(S source, Class<T> targetClass, String mappingName,
+                                            MappingContext mappingContext) {
+        if (mappingContext != null && mappingContext.containsKey(HINT_REUSE_MAPPING)) {
             return loadMapping(new MappingKey(proxyNarrowingStrategy.narrow(source), targetClass, mappingName));
         }
         return null;

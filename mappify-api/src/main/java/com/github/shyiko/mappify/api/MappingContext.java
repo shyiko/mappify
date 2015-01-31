@@ -28,39 +28,40 @@ import java.util.Set;
  */
 public class MappingContext {
 
-    protected Map<String, Object> context = new HashMap<String, Object>();
+    protected Map<String, Object> context;
+    protected Iterable source;
+    protected int sourceIndex = -1;
 
     public MappingContext() {
+        this((Map<String, Object>) null);
     }
 
     /**
      * @param context mapping context to copy mappings from
      */
     public MappingContext(MappingContext context) {
-        this.context.putAll(context.context);
+        this(context.context);
     }
 
     /**
-     * @param mappings mappings
+     * @param data data
      */
-    public MappingContext(Map<String, Object> mappings) {
-        if (mappings == null) {
-            throw new IllegalArgumentException("Context cannot be NULL");
-        }
-        this.context.putAll(mappings);
+    public MappingContext(Map<String, Object> data) {
+        context = initContext(data);
     }
 
     /**
      * Same as
      * <pre>
-     * Map&lt;String, Object&gt; mappings = new HashMap&lt;String, Object&gt;();
-     * mappings.put(key, value);
-     * ... = new MappingContext(mappings)
+     * Map&lt;String, Object&gt; data = new HashMap&lt;String, Object&gt;();
+     * data.put(key, value);
+     * ... = new MappingContext(data)
      * </pre>
      * @param key key
      * @param value any object that needs to be available during the mapping process
      */
     public MappingContext(String key, Object value) {
+        this((Map<String, Object>) null);
         context.put(key, value);
     }
 
@@ -87,10 +88,20 @@ public class MappingContext {
     }
 
     /**
+     * @deprecated use {@link #containsKey(String)} instead
      * @param key key
      * @return true if this context contains a mapping for the given key
      */
+    @Deprecated
     public boolean hasKey(String key) {
+        return containsKey(key);
+    }
+
+    /**
+     * @param key key
+     * @return true if this context contains a mapping for the given key
+     */
+    public boolean containsKey(String key) {
         return context.containsKey(key);
     }
 
@@ -102,9 +113,18 @@ public class MappingContext {
     }
 
     /**
+     * @deprecated use {@link #keySet()} instead
      * @return a {@link Set} view of the keys defined in this context
      */
+    @Deprecated
     public Set<String> getKeys() {
+        return keySet();
+    }
+
+    /**
+     * @return a {@link Set} view of the keys defined in this context
+     */
+    public Set<String> keySet() {
         return context.keySet();
     }
 
@@ -146,6 +166,37 @@ public class MappingContext {
     public MappingContext clear() {
         context.clear();
         return this;
+    }
+
+    /**
+     * @return index in source, -1 unless mapping is taking place over the collection/array
+     */
+    public int getSourceIndex() {
+        return sourceIndex;
+    }
+
+    public void setSourceIndex(int sourceIndex) {
+        this.sourceIndex = sourceIndex;
+    }
+
+    /**
+     * @param <T> source item type
+     * @return source, null unless mapping is taking place over the collection/array
+     */
+    @SuppressWarnings("unchecked")
+    public <T> Iterable<T> getSource() {
+        return source;
+    }
+
+    public void setSource(Iterable source) {
+        this.source = source;
+    }
+
+    protected Map<String, Object> initContext(Map<String, Object> data) {
+        if (data == null) {
+            return new HashMap<String, Object>();
+        }
+        return new HashMap<String, Object>(data);
     }
 
     @Override

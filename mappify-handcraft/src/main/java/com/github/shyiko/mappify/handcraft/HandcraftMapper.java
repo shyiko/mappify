@@ -57,7 +57,11 @@ public class HandcraftMapper extends AbstractMapper {
         assertNotNull(targetClass, "Target class cannot be null");
         assertNotNull(mappingName, "Mapping name cannot be null");
         if (!sourceCollection.isEmpty()) {
+            Iterable<Object> previousSource = null;
+            int previousSourceIndex = -1;
             if (mappingContext != null) {
+                previousSource = mappingContext.getSource();
+                previousSourceIndex = mappingContext.getSourceIndex();
                 mappingContext.setSource(sourceCollection);
             }
             try {
@@ -78,8 +82,8 @@ public class HandcraftMapper extends AbstractMapper {
                 }
             } finally {
                 if (mappingContext != null) {
-                    mappingContext.setSource(null);
-                    mappingContext.setSourceIndex(-1);
+                    mappingContext.setSource(previousSource);
+                    mappingContext.setSourceIndex(previousSourceIndex);
                 }
             }
         }
@@ -94,7 +98,11 @@ public class HandcraftMapper extends AbstractMapper {
         assertNotNull(mappingName, "Mapping name cannot be null");
         int sourceArrayLength = sourceArray.length;
         if (sourceArrayLength != 0) {
+            Iterable<Object> previousSource = null;
+            int previousSourceIndex = -1;
             if (mappingContext != null) {
+                previousSource = mappingContext.getSource();
+                previousSourceIndex = mappingContext.getSourceIndex();
                 mappingContext.setSource(new ArrayIterable<S>(sourceArray));
             }
             try {
@@ -108,8 +116,8 @@ public class HandcraftMapper extends AbstractMapper {
                 }
             } finally {
                 if (mappingContext != null) {
-                    mappingContext.setSource(null);
-                    mappingContext.setSourceIndex(-1);
+                    mappingContext.setSource(previousSource);
+                    mappingContext.setSourceIndex(previousSourceIndex);
                 }
             }
         }
@@ -124,7 +132,11 @@ public class HandcraftMapper extends AbstractMapper {
         assertNotNull(mappingName, "Mapping name cannot be null");
         int sourceArrayLength = sourceArray.length;
         if (sourceArrayLength != 0) {
+            Iterable<Object> previousSource = null;
+            int previousSourceIndex = -1;
             if (mappingContext != null) {
+                previousSource = mappingContext.getSource();
+                previousSourceIndex = mappingContext.getSourceIndex();
                 mappingContext.setSource(new ArrayIterable<S>(sourceArray));
             }
             try {
@@ -138,8 +150,8 @@ public class HandcraftMapper extends AbstractMapper {
                 }
             } finally {
                 if (mappingContext != null) {
-                    mappingContext.setSource(null);
-                    mappingContext.setSourceIndex(-1);
+                    mappingContext.setSource(previousSource);
+                    mappingContext.setSourceIndex(previousSourceIndex);
                 }
             }
         }
@@ -155,7 +167,11 @@ public class HandcraftMapper extends AbstractMapper {
         int sourceArrayLength = sourceArray.length;
         T[] result = (T[]) Array.newInstance(targetClass, sourceArrayLength);
         if (sourceArrayLength != 0) {
+            Iterable<Object> previousSource = null;
+            int previousSourceIndex = -1;
             if (mappingContext != null) {
+                previousSource = mappingContext.getSource();
+                previousSourceIndex = mappingContext.getSourceIndex();
                 mappingContext.setSource(new ArrayIterable<S>(sourceArray));
             }
             try {
@@ -169,8 +185,8 @@ public class HandcraftMapper extends AbstractMapper {
                 }
             } finally {
                 if (mappingContext != null) {
-                    mappingContext.setSource(null);
-                    mappingContext.setSourceIndex(-1);
+                    mappingContext.setSource(previousSource);
+                    mappingContext.setSourceIndex(previousSourceIndex);
                 }
             }
         }
@@ -185,7 +201,11 @@ public class HandcraftMapper extends AbstractMapper {
         assertNotNull(targetClass, "Target class cannot be null");
         assertNotNull(mappingName, "Mapping name cannot be null");
         if (!sourceCollection.isEmpty()) {
+            Iterable<Object> previousSource = null;
+            int previousSourceIndex = -1;
             if (mappingContext != null) {
+                previousSource = mappingContext.getSource();
+                previousSourceIndex = mappingContext.getSourceIndex();
                 mappingContext.setSource(sourceCollection);
             }
             try {
@@ -206,8 +226,8 @@ public class HandcraftMapper extends AbstractMapper {
                 }
             } finally {
                 if (mappingContext != null) {
-                    mappingContext.setSource(null);
-                    mappingContext.setSourceIndex(-1);
+                    mappingContext.setSource(previousSource);
+                    mappingContext.setSourceIndex(previousSourceIndex);
                 }
             }
         }
@@ -223,7 +243,11 @@ public class HandcraftMapper extends AbstractMapper {
         assertNotNull(mappingName, "Mapping name cannot be null");
         T[] result = (T[]) Array.newInstance(targetClass, sourceCollection.size());
         if (!sourceCollection.isEmpty()) {
+            Iterable<Object> previousSource = null;
+            int previousSourceIndex = -1;
             if (mappingContext != null) {
+                previousSource = mappingContext.getSource();
+                previousSourceIndex = mappingContext.getSourceIndex();
                 mappingContext.setSource(sourceCollection);
             }
             try {
@@ -244,8 +268,8 @@ public class HandcraftMapper extends AbstractMapper {
                 }
             } finally {
                 if (mappingContext != null) {
-                    mappingContext.setSource(null);
-                    mappingContext.setSourceIndex(-1);
+                    mappingContext.setSource(previousSource);
+                    mappingContext.setSourceIndex(previousSourceIndex);
                 }
             }
         }
